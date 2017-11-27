@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Artfolio_ver1.0</string>
+    <string name="title_activity_main_user">ART-FOLIO HOME</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="facebook_app_id">138098100284646</string>
+    <string name="kakao_app_key">99e41d8d8af2e374373a29fec6914324</string>
+</resources>
