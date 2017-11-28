@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -59,6 +60,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class Dashboard_frag extends android.support.v4.app.Fragment {
     picmoreListner picmoreListner;
     TransferUtility transferUtility;
+
     private static final int PICK_FROM_CAMERA = 0;
     private static final int PICK_FROM_GALLERY = 1;
     private static final int CROP_FROM_IMAGE = 2;
@@ -101,6 +103,16 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
             System.out.println("Error");
         }
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+       // android.support.v4.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
+       // transaction.detach(this).attach(this).commit();
+        //pic_names= ((MainActivity_user)getActivity()).update_list();
+
+        Log.e("RESUME", "update");
+        picmore_list= ((MainActivity_user)getActivity()).update_list();
+    }
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -115,6 +127,7 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
         transferUtility = new TransferUtility(s3, getApplicationContext());
        //
        // set_thumnail();
+      //  picmore_list= ((MainActivity_user)getActivity()).update_list();
     }
 
 
@@ -125,7 +138,9 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
         user_email = getArguments().getString("email");
         picnum= getArguments().getInt("picnum");
         pic_names = getArguments().getStringArray("piclist");
-
+     //   pic_names= ((MainActivity_user)getActivity()).update_list();
+        Log.e("onCreateView", "View Create");
+        picmore_list= ((MainActivity_user)getActivity()).update_list();
         View view = inflater.inflate(R.layout.dashboard_frag, null);
         ImageButton pic_add = (ImageButton) view.findViewById(R.id.pic_add);
         ImageButton list_pic = (ImageButton)view.findViewById(R.id.list1);
@@ -176,12 +191,16 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
             layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-
+          //  thum_adapter.setItems(data);
+            mGlideRequestManager = Glide.with(Dashboard_frag.this);
+            dash_thum_adapter thum_adapter = new dash_thum_adapter(data, R.layout.dash_thum_picitem,mGlideRequestManager);
             lecyclerView.setLayoutManager(layoutManager);
 
-            mGlideRequestManager = Glide.with(Dashboard_frag.this);
+
           //  Collections.reverse(data);
-            lecyclerView.setAdapter(new dash_thum_adapter(data, R.layout.dash_thum_picitem,mGlideRequestManager));
+            thum_adapter.setItems(data);
+        //   thum_adapter.notifyDataSetChanged();
+            lecyclerView.setAdapter(thum_adapter);
         }
         //lecyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -228,21 +247,26 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
                         .show();
             }
         });
+
+
         list_pic.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
 
-                                           picmore_list= ((MainActivity_user)getActivity()).update_list();
+//                                           picmore_list= ((MainActivity_user)getActivity()).update_list();
                                           // System.out.println("dashshshsh");
                                             //picmore_list=((MainActivity_user)getActivity()).return_list();
                                            // ((picmoreListner)getActivity()).delieverPicList(picmore_list);
 //                                           for(int i=0; i<picmore_list.length; i++) {
 //                                               System.out.println("dash picmore array : "+ picmore_list[i]);
 //                                           }
-                                            Intent intent = new Intent(getActivity(), Picmore_listviewActivity.class);
-                                            intent.putExtra("picmorelist",picmore_list);
-                                            startActivity(intent);
 
+                                            picmore_list= get_updateList();
+                                            if(picmore_list!=null) {
+                                                Intent intent = new Intent(getActivity(), Picmore_listviewActivity.class);
+                                                intent.putExtra("picmorelist", picmore_list);
+                                                startActivity(intent);
+                                            }
                                         }
                                     }
 
@@ -269,6 +293,9 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
         intent.putExtra("index", PICK_FROM_CAMERA);
         intent.putExtra("user_id", user_id);
         startActivity(intent);
+    }
+    public String[] get_updateList(){
+        return this.picmore_list;
     }
 
     class Download_thumnail extends AsyncTask<String, Integer, Bitmap> {

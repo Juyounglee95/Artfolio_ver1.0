@@ -216,6 +216,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
     }
     public String[] update_list(){
         set_picList();
+
         return list;
     }
 

@@ -40,6 +40,10 @@ public class dash_thum_adapter extends RecyclerView.Adapter<dash_thum_adapter.Vi
 
 
      }
+     public void setItems(ArrayList<dash_thum_pic> dash_thum_pics) {
+         this.dash_thum_pics = dash_thum_pics;
+         notifyDataSetChanged();
+     }
 
      /**
       * 레이아웃을 만들어서 Holer에 저장
