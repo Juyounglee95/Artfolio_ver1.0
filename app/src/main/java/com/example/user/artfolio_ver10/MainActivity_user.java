@@ -43,7 +43,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
     private Dashboard_frag Dashboard_frag;
     private Home_frag Home_frag;
     String list[];
-    //ArrayList<String> piclist = new ArrayList<String>();
+    ArrayList<String> piclist = new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -201,17 +201,22 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
 //            String email = userInfo[3]; // email
 //
            // System.out.println(list.length);
-            for(int i =0 ; i <list.length; i++) {
-                System.out.println(list[i]);
-            }
+//            for(int i =0 ; i <list.length; i++) {
+//                System.out.println(list[i]);
+//              //  piclist.add(list[i]);
+//            }
             picList_size=list.length;
-            System.out.println("piclist size : "+picList_size);
+         //   System.out.println("piclist size : "+picList_size);
          //   System.out.println()
         } catch (NullPointerException e) {
             e.printStackTrace();
             //Log.d(TAG, "showResult : ", e);
         }
 
+    }
+    public String[] update_list(){
+        set_picList();
+        return list;
     }
 
     class picInfo_DB extends AsyncTask<String, Integer, String> {

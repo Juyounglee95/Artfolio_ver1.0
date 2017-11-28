@@ -1,5 +1,6 @@
 package com.example.user.artfolio_ver10;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 
@@ -9,11 +10,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,7 +31,9 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.bumptech.glide.Glide;
-
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +43,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,6 +57,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 public class Dashboard_frag extends android.support.v4.app.Fragment {
+    picmoreListner picmoreListner;
     TransferUtility transferUtility;
     private static final int PICK_FROM_CAMERA = 0;
     private static final int PICK_FROM_GALLERY = 1;
@@ -62,9 +71,18 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
     Bitmap bitmap1, bitmap2, bitmap3, bitmap4;
     Download_thumnail thumnailtask;
     String pic_names[];
+    String thum_piclist[];
+    String picmore_list[];
+    ArrayList<dash_thum_pic> data;
     private ArrayList<HashMap<String, Object>> transferRecordMaps;
     AmazonS3 s3;
+    private RecyclerView lecyclerView;
+    public RequestManager mGlideRequestManager;
 
+
+    public interface picmoreListner{ // list view 에 array 전달
+        void delieverPicList(String[] piclist);
+    }
     public static Dashboard_frag newInstance() {
         Dashboard_frag fragment = new Dashboard_frag();
         return fragment;
@@ -75,6 +93,14 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
     }
 
     @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        try{
+            picmoreListner=(picmoreListner)activity;
+        }catch (ClassCastException e){
+            System.out.println("Error");
+        }
+    }
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
@@ -106,10 +132,62 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
         TextView userid = (TextView) view.findViewById(R.id.ID);
         TextView useremail = (TextView) view.findViewById(R.id.email);
         TextView picnum_view = (TextView) view.findViewById(R.id.pic_totalnum);
-        picture1 = (ImageView) view.findViewById(R.id.picture1);
-        picture2 = (ImageView) view.findViewById(R.id.picture2);
-        picture3 = (ImageView) view.findViewById(R.id.picture3);
-        picture4 = (ImageView) view.findViewById(R.id.picture4);
+//        picture1 = (ImageView) view.findViewById(R.id.picture1);
+//        picture2 = (ImageView) view.findViewById(R.id.picture2);
+//        picture3 = (ImageView) view.findViewById(R.id.picture3);
+//        picture4 = (ImageView) view.findViewById(R.id.picture4);
+        //HorizontalListView thum_picList = (HorizontalScrollView)view.findViewById(R.id.thum_piclist);
+        lecyclerView = (RecyclerView)view.findViewById(R.id.dash_thum_piclist);
+        ArrayList<dash_thum_pic> data = new ArrayList<>();
+        if(pic_names!=null) {
+           thum_piclist = new String[pic_names.length];
+            for (int i = 0; i < pic_names.length; i++) {
+
+                thum_piclist[i] = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + pic_names[i];
+               // System.out.println(thum_piclist[i]);
+                //System.out.println("name/////"+name_list[i]);
+
+            }
+        }
+        String[] reverse_thumlist = new String[thum_piclist.length];
+        for(int i = thum_piclist.length ; i > 0 ; i--){
+            reverse_thumlist[thum_piclist.length-i] = thum_piclist[i-1].toString();
+
+        }
+
+
+
+        if(thum_piclist.length>4){
+        for(int i=0; i<4; i++) {
+               // data.remove(i);
+                data.add(new dash_thum_pic(reverse_thumlist[i]));
+           // System.out.println("thum data: "+data.get(i).getImage_url());
+            }
+
+           // System.out.println("data: "+data.get(i).getImage_url());
+        }else{
+            for(int i=0; i<thum_piclist.length; i++) {
+
+                data.add(new dash_thum_pic(reverse_thumlist[i]));
+//           //     System.out.println("thum data: "+data.get(i).getImage_url());
+            }
+        }
+        if(data!=null) {
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+
+            lecyclerView.setLayoutManager(layoutManager);
+
+            mGlideRequestManager = Glide.with(Dashboard_frag.this);
+          //  Collections.reverse(data);
+            lecyclerView.setAdapter(new dash_thum_adapter(data, R.layout.dash_thum_picitem,mGlideRequestManager));
+        }
+        //lecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+
+
+
 
 
 
@@ -117,8 +195,8 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
         useremail.setText(user_email);
         picnum_view.setText(Integer.toString(picnum));
 
-            Glide.with(getActivity()).load("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + pic_names[0]).into(picture1);
-        Glide.with(getActivity()).load("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + pic_names[1]).into(picture2);
+      //      Glide.with(getActivity()).load("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + pic_names[0]).into(picture1);
+       // Glide.with(getActivity()).load("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + pic_names[1]).into(picture2);
 
         // ((액티비티 클래스이름)getActivity()).액티비티의public메소드(); 이런식으로 하시면됩니다.
         pic_add.setOnClickListener(new View.OnClickListener() {
@@ -150,9 +228,25 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
                         .show();
             }
         });
-//        list_pic.setOnClickListener(
-//
-//        );
+        list_pic.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+
+                                           picmore_list= ((MainActivity_user)getActivity()).update_list();
+                                          // System.out.println("dashshshsh");
+                                            //picmore_list=((MainActivity_user)getActivity()).return_list();
+                                           // ((picmoreListner)getActivity()).delieverPicList(picmore_list);
+//                                           for(int i=0; i<picmore_list.length; i++) {
+//                                               System.out.println("dash picmore array : "+ picmore_list[i]);
+//                                           }
+                                            Intent intent = new Intent(getActivity(), Picmore_listviewActivity.class);
+                                            intent.putExtra("picmorelist",picmore_list);
+                                            startActivity(intent);
+
+                                        }
+                                    }
+
+        );
         // Inflate the layout for this fragment
         // return inflater.inflate(R.layout.dashboard_frag, container, false);
         return view;
