@@ -162,14 +162,29 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
             Bundle dash_bundel = new Bundle();
 
 
+            if(list!=null) {
+                dash_bundel.putString("initial", "notFirst");
+                dash_bundel.putString("id", id);
+                dash_bundel.putString("email", email);
+                dash_bundel.putInt("picnum", picList_size);
 
-            dash_bundel.putString("id", id);
-            dash_bundel.putString("email", email);
-            dash_bundel.putInt("picnum", picList_size);
-            dash_bundel.putStringArray("piclist",list );
+                dash_bundel.putStringArray("piclist", list);
+
+               // Dashboard_frag.setArguments(dash_bundel);
+                //transaction.replace(R.id.container, Dashboard_frag);
+            }else{
+                dash_bundel.putString("initial", "First");
+                dash_bundel.putString("id", id);
+                dash_bundel.putString("email", email);
+                dash_bundel.putInt("picnum", picList_size);
+
+                //dash_bundel.putStringArray("piclist", list);
+
+
+            }
+
             Dashboard_frag.setArguments(dash_bundel);
             transaction.replace(R.id.container, Dashboard_frag);
-
 
         } else if (itemid == R.id.nav_favorite) {
 
@@ -195,19 +210,9 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         try {
             String string = data;
              list = string.split("<br>");
-//            String name = userInfo[0]; // name
-//            String id = userInfo[1]; // ID
-//            String phone = userInfo[2]; // phone
-//            String email = userInfo[3]; // email
-//
-           // System.out.println(list.length);
-//            for(int i =0 ; i <list.length; i++) {
-//                System.out.println(list[i]);
-//              //  piclist.add(list[i]);
-//            }
+
             picList_size=list.length;
-         //   System.out.println("piclist size : "+picList_size);
-         //   System.out.println()
+
         } catch (NullPointerException e) {
             e.printStackTrace();
             //Log.d(TAG, "showResult : ", e);

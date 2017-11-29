@@ -68,6 +68,7 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
     String user_id;
     String user_email;
     String imgUrl;
+    String mode;
     int picnum;
     ImageView picture1, picture2, picture3, picture4;
     Bitmap bitmap1, bitmap2, bitmap3, bitmap4;
@@ -134,16 +135,21 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mode = getArguments().getString("initial");
+
         user_id = getArguments().getString("id");
         user_email = getArguments().getString("email");
         picnum= getArguments().getInt("picnum");
-        pic_names = getArguments().getStringArray("piclist");
+        if(mode.equals("notFirst")) {
+            pic_names = getArguments().getStringArray("piclist");
+        }
      //   pic_names= ((MainActivity_user)getActivity()).update_list();
         Log.e("onCreateView", "View Create");
         picmore_list= ((MainActivity_user)getActivity()).update_list();
         View view = inflater.inflate(R.layout.dashboard_frag, null);
         ImageButton pic_add = (ImageButton) view.findViewById(R.id.pic_add);
         ImageButton list_pic = (ImageButton)view.findViewById(R.id.list1);
+        //Button refresh = (Button)view.findViewById(R.id.btn_refresh);
         TextView userid = (TextView) view.findViewById(R.id.ID);
         TextView useremail = (TextView) view.findViewById(R.id.email);
         TextView picnum_view = (TextView) view.findViewById(R.id.pic_totalnum);
@@ -155,36 +161,34 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
         lecyclerView = (RecyclerView)view.findViewById(R.id.dash_thum_piclist);
         ArrayList<dash_thum_pic> data = new ArrayList<>();
         if(pic_names!=null) {
-           thum_piclist = new String[pic_names.length];
+            thum_piclist = new String[pic_names.length];
             for (int i = 0; i < pic_names.length; i++) {
 
                 thum_piclist[i] = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + pic_names[i];
-               // System.out.println(thum_piclist[i]);
-                //System.out.println("name/////"+name_list[i]);
 
             }
-        }
-        String[] reverse_thumlist = new String[thum_piclist.length];
-        for(int i = thum_piclist.length ; i > 0 ; i--){
-            reverse_thumlist[thum_piclist.length-i] = thum_piclist[i-1].toString();
 
-        }
+            String[] reverse_thumlist = new String[thum_piclist.length];
+            for (int i = thum_piclist.length; i > 0; i--) {
+                reverse_thumlist[thum_piclist.length - i] = thum_piclist[i - 1].toString();
 
-
-
-        if(thum_piclist.length>4){
-        for(int i=0; i<4; i++) {
-               // data.remove(i);
-                data.add(new dash_thum_pic(reverse_thumlist[i]));
-           // System.out.println("thum data: "+data.get(i).getImage_url());
             }
 
-           // System.out.println("data: "+data.get(i).getImage_url());
-        }else{
-            for(int i=0; i<thum_piclist.length; i++) {
 
-                data.add(new dash_thum_pic(reverse_thumlist[i]));
+            if (thum_piclist.length > 4) {
+                for (int i = 0; i < 4; i++) {
+                    // data.remove(i);
+                    data.add(new dash_thum_pic(reverse_thumlist[i]));
+                    // System.out.println("thum data: "+data.get(i).getImage_url());
+                }
+
+                // System.out.println("data: "+data.get(i).getImage_url());
+            } else {
+                for (int i = 0; i < thum_piclist.length; i++) {
+
+                    data.add(new dash_thum_pic(reverse_thumlist[i]));
 //           //     System.out.println("thum data: "+data.get(i).getImage_url());
+                }
             }
         }
         if(data!=null) {
@@ -253,14 +257,6 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
                                         @Override
                                         public void onClick(View view) {
 
-//                                           picmore_list= ((MainActivity_user)getActivity()).update_list();
-                                          // System.out.println("dashshshsh");
-                                            //picmore_list=((MainActivity_user)getActivity()).return_list();
-                                           // ((picmoreListner)getActivity()).delieverPicList(picmore_list);
-//                                           for(int i=0; i<picmore_list.length; i++) {
-//                                               System.out.println("dash picmore array : "+ picmore_list[i]);
-//                                           }
-
                                             picmore_list= get_updateList();
                                             if(picmore_list!=null) {
                                                 Intent intent = new Intent(getActivity(), Picmore_listviewActivity.class);
@@ -271,6 +267,7 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
                                     }
 
         );
+
         // Inflate the layout for this fragment
         // return inflater.inflate(R.layout.dashboard_frag, container, false);
         return view;

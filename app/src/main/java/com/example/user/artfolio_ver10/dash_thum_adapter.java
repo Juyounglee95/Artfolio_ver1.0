@@ -67,12 +67,8 @@ public class dash_thum_adapter extends RecyclerView.Adapter<dash_thum_adapter.Vi
       */
      @Override
      public void onBindViewHolder(ViewHolder viewHolder, int position) {
-          //  super.onBindViewHolder(viewHolder, position);
+
          dash_thum_pic item = dash_thum_pics.get(position);
-        // viewHolder.textTitle.setText(item.getTitle());
-      //   Glide.with(context).load(piclist_itemArrayList.get(i).getImage_url()).into(viewHolder.pic_image);
-      //   viewHolder.img.setBackgroundResource(item.getImage());
-       //  viewHolder.itemView.setTag(item);
 
          mRequestManager
                  .load(dash_thum_pics.get(position).getImage_url())

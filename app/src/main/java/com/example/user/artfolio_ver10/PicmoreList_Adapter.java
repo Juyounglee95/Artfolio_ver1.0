@@ -47,10 +47,6 @@ public class PicmoreList_Adapter extends RecyclerView.Adapter<PicmoreList_Adapte
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         //  super.onBindViewHolder(viewHolder, position);
         piclist_item item =piclist_itemArrayList.get(position);
-        // viewHolder.textTitle.setText(item.getTitle());
-        //   Glide.with(context).load(piclist_itemArrayList.get(i).getImage_url()).into(viewHolder.pic_image);
-        //   viewHolder.img.setBackgroundResource(item.getImage());
-        //  viewHolder.itemView.setTag(item);
 
         mRequestManager
                 .load(piclist_itemArrayList.get(position).getImage_url())
