@@ -252,7 +252,7 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
             }
         });
 
-
+////
         list_pic.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
