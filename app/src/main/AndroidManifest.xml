@@ -31,11 +31,11 @@
         </activity>
         <activity android:name=".Sign_up" />
         <activity android:name=".getImage" />
-        <activity android:name=".main_login"></activity>
+        <activity android:name=".main_login" />
         <activity
             android:name=".MainActivity_user"
             android:label="@string/title_activity_main_user"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -56,7 +56,9 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
 
-        <activity android:name=".Picmore_listviewActivity"></activity>
+        <activity android:name=".Picmore_listviewActivity" />
+        <activity android:name=".pic_detailActivity" />
+        <activity android:name=".Editmemo_Activity"></activity>
     </application>
 
 </manifest>

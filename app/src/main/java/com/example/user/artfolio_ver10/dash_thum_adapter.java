@@ -1,7 +1,10 @@
 package com.example.user.artfolio_ver10;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +17,14 @@ import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;
 import com.bumptech.glide.RequestManager;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -25,14 +36,15 @@ public class dash_thum_adapter extends RecyclerView.Adapter<dash_thum_adapter.Vi
      private ArrayList<dash_thum_pic> dash_thum_pics;
      private int itemLayout;
      private Context context;
+     String path, memo;
      RequestManager mRequestManager;
      /**
       * 생성자
       * @param
       * @param
       */
-     public dash_thum_adapter(ArrayList<dash_thum_pic> dash_thum_pics , int itemLayout, RequestManager requestManager){
-
+     public dash_thum_adapter(Context context,ArrayList<dash_thum_pic> dash_thum_pics , int itemLayout, RequestManager requestManager){
+         this.context = context;
          this.dash_thum_pics = dash_thum_pics;
          this.itemLayout = itemLayout;
          mRequestManager= requestManager;
@@ -66,7 +78,7 @@ public class dash_thum_adapter extends RecyclerView.Adapter<dash_thum_adapter.Vi
       * @param position
       */
      @Override
-     public void onBindViewHolder(ViewHolder viewHolder, int position) {
+     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
 
          dash_thum_pic item = dash_thum_pics.get(position);
 
@@ -74,8 +86,26 @@ public class dash_thum_adapter extends RecyclerView.Adapter<dash_thum_adapter.Vi
                  .load(dash_thum_pics.get(position).getImage_url())
                  .into(viewHolder.img);
 
+         viewHolder.img.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 dash_thum_pic item = dash_thum_pics.get(position);
+
+                 // Toast.makeText(context, "Recycle Click" , Toast.LENGTH_SHORT).show();
+                 path = dash_thum_pics.get(position).getImage_url();
+
+                 setMemo();
 
 
+             }
+         });
+
+
+     }
+
+     public void setMemo(){
+         pic_detail pic_detail = new pic_detail();
+         pic_detail.execute();
      }
 
      @Override
@@ -99,6 +129,76 @@ public class dash_thum_adapter extends RecyclerView.Adapter<dash_thum_adapter.Vi
          }
 
      }
+     class pic_detail extends AsyncTask<String, Integer, String> {
+
+
+         protected String doInBackground(String... unuesed){
+
+             String data = "";
+             String name = path.substring(61);
+             String value = "path="+name+"";
+             Log.e("POST",value);
+             try {
+                 URL url = new URL("http://54.226.200.206/get_picmemo.php");
+                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                 con.setRequestMethod("POST");
+                 con.setDoInput(true);
+                 con.connect();
+
+                 OutputStream outs = con.getOutputStream();
+                 outs.write(value.getBytes("UTF-8"));
+                 outs.flush();
+                 outs.close();
+
+
+                 InputStream is = null;
+                 BufferedReader in = null;
+
+
+                 is = con.getInputStream();
+                 in = new BufferedReader(new InputStreamReader(is), 8 * 1024);
+                 String line = null;
+                 StringBuilder buff = new StringBuilder();
+                 while ( ( line = in.readLine() ) != null )
+                 {
+                     buff.append(line + "\n");
+                 }
+                 data = buff.toString().trim();
+                 //System.out.println(data);
+                 Log.e("Path data",data);
+
+
+
+             } catch (MalformedURLException e) {
+                 e.printStackTrace();
+             } catch (IOException e) {
+                 e.printStackTrace();
+             }
+
+             return data;
+         }
+
+         protected void onPostExecute(String data) {
+             //super.onPostExecute(data);
+                 /* 서버에서 응답 */
+             //Log.e("RECV DATA",data);
+
+             //System.out.print(data);
+             // data = data.toString();
+             memo = data;
+             Intent intent = new Intent(context, pic_detailActivity.class);
+             intent.putExtra("path", path);
+             String name = path.substring(61);
+             intent.putExtra("name",name);
+             intent.putExtra("memo", memo);
+             context.startActivity(intent);
+             //   // Toast.makeText(getApplicationContext(), "download success", Toast.LENGTH_SHORT).show();
+
+         }
+
+     }
+
  }
 
 

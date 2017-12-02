@@ -40,9 +40,4 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.0.+'
 
 
-
-
-
-
-
 }

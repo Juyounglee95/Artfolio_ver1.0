@@ -19,6 +19,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,8 @@ public class getImage extends AppCompatActivity  {
     String username;
     ImageView imageView;
     TextView imageName;
+    EditText edit_memo;
+    String  pic_memo;
     private Uri imageUri;
     private Uri photoURI, albumURI;
     TransferUtility transferUtility;
@@ -66,6 +69,7 @@ public class getImage extends AppCompatActivity  {
         setContentView(R.layout.activity_get_image);
         imageView= (ImageView)findViewById(R.id.picked_image);
         imageName = (TextView)findViewById(R.id.Image_name);
+        edit_memo=(EditText)findViewById(R.id.pic_memo);
         //checkPermission();
         Intent intent = getIntent();
         int index = intent.getExtras().getInt("index");
@@ -95,6 +99,7 @@ public class getImage extends AppCompatActivity  {
 //                OBJECT_KEY,    /* 버킷에 저장할 파일의 이름 */
 //                MY_FILE        /* 버킷에 저장할 파일  */
 //        );
+        pic_memo=edit_memo.getText().toString();
         picInfo_upload picInfo_upload = new picInfo_upload();
         picInfo_upload.execute();
 
@@ -350,9 +355,9 @@ public class getImage extends AppCompatActivity  {
 
 
         protected String doInBackground(String... unuesed){
-
+            System.out.println(pic_memo);
             String data = "";
-            String value =  "ID="+username+"&path="+image_name+"";
+            String value =  "ID="+username+"&path="+image_name+"&memo="+pic_memo+"";
             try {
                 URL url = new URL("http://54.226.200.206/upload_picInfo.php");
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -393,19 +398,22 @@ public class getImage extends AppCompatActivity  {
         protected void onPostExecute(String data) {
 
                  /* 서버에서 응답 */
-            //Log.e("RECV DATA",data);
+            Log.e("RECV DATA",data);
 
-            if(data.equals("SUCCESS"))
+            if(data.equals("ERROR"))
             {
-                Toast.makeText(getApplicationContext(),"Upload Success", Toast.LENGTH_SHORT).show();
-                send_server(absolutePath);
+                Toast.makeText(getApplicationContext(),"Upload Fail", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),"Upload Success", Toast.LENGTH_SHORT).show();
+//                send_server(absolutePath);
                 //dashboard fragment picnum update 시키기
              //   finish();
             }
             else
             {
-                Toast.makeText(getApplicationContext(),"Upload Fail", Toast.LENGTH_SHORT).show();
+             //   Toast.makeText(getApplicationContext(),"Upload Fail", Toast.LENGTH_SHORT).show();
               //  Toast.makeText(getApplicationContext(),"입력사항을 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Upload Success", Toast.LENGTH_SHORT).show();
+                send_server(absolutePath);
             }
         }
 

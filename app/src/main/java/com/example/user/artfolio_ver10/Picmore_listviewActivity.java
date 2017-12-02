@@ -1,15 +1,25 @@
 package com.example.user.artfolio_ver10;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import static com.androidquery.util.AQUtility.getContext;
@@ -17,6 +27,7 @@ import static com.androidquery.util.AQUtility.getContext;
 public class Picmore_listviewActivity extends AppCompatActivity  {
     String image_list[];
     String name_list[];
+    //String path, memo;
     RequestManager  mGlideRequestManager;
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -65,35 +76,12 @@ public class Picmore_listviewActivity extends AppCompatActivity  {
 
             mGlideRequestManager = Glide.with(this);
             //  Collections.reverse(data);
-            recyclerView.setAdapter(new PicmoreList_Adapter(data, R.layout.picmore_item,mGlideRequestManager));
+            recyclerView.setAdapter(new PicmoreList_Adapter(this, data, R.layout.picmore_item,mGlideRequestManager));
          //   finish();
         }
 
 
     }
-//    public void delieverPicList(String[] piclist){
-//       // for(int i=0; i<)
-//     image_list= piclist;
-//     setToUrl(image_list);
-//     if(image_list.length>0){
-//         for(int i=0; i<image_list.length; i++){
-//             System.out.println(image_list[i]);
-//         }
-//     }
-//
-//    }
-    public void setToUrl(String[] piclist){
-       // String[] copylist =piclist;
-        if(piclist!=null) {
-            for (int i = 0; i < piclist.length; i++) {
-
-                image_list[i] = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + piclist[i];
-                //System.out.println(image_list[i]);
-                //System.out.println("name/////"+name_list[i]);
-
-            }
-        }
 
 
-    }
 }

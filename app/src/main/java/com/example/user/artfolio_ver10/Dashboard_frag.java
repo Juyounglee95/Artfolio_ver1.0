@@ -197,7 +197,7 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
             layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
           //  thum_adapter.setItems(data);
             mGlideRequestManager = Glide.with(Dashboard_frag.this);
-            dash_thum_adapter thum_adapter = new dash_thum_adapter(data, R.layout.dash_thum_picitem,mGlideRequestManager);
+            dash_thum_adapter thum_adapter = new dash_thum_adapter(getContext(), data, R.layout.dash_thum_picitem,mGlideRequestManager);
             lecyclerView.setLayoutManager(layoutManager);
 
 

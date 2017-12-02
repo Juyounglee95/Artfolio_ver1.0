@@ -209,6 +209,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
     public void getPic_List(String data){
         try {
             String string = data;
+
              list = string.split("<br>");
 
             picList_size=list.length;
