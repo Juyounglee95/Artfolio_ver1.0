@@ -75,11 +75,14 @@ public class main_login extends AppCompatActivity {
 //            for(int i =0 ; i <userInfo.length; i++){
 //                System.out.println(userInfo[i]);
 //            }
+            String [] wholeuser = userInfo[4].split("/");
+
             Intent intent= new Intent(main_login.this, MainActivity_user.class);
             intent.putExtra("name", name);
             intent.putExtra("id", id);
             intent.putExtra("phone", phone);
             intent.putExtra("email", email);
+            intent.putExtra("userlist", wholeuser);
             startActivity(intent);
 
             finish();

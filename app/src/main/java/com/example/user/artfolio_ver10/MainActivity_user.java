@@ -43,6 +43,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
     private Dashboard_frag Dashboard_frag;
     private Home_frag Home_frag;
     String list[];
+    String userlist[];
     ArrayList<String> piclist = new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +53,17 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         id = intent.getExtras().getString("id");
         phone = intent.getExtras().getString("phone");
         email = intent.getExtras().getString("email");
+        userlist= intent.getExtras().getStringArray("userlist");
         System.out.println(name);
         setContentView(R.layout.activity_main_user);
 
 
         Dashboard_frag =  Dashboard_frag.newInstance();
         Home_frag = Home_frag.newInstance();
+        Bundle home_bundle = new Bundle();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        home_bundle.putStringArray("userlist", userlist);
+        Home_frag.setArguments(home_bundle);
         transaction.add(R.id.container, Home_frag);
 
         transaction.addToBackStack(null);
@@ -102,7 +107,6 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         useremail= (TextView)nav_header_view.findViewById(R.id.user_email_nav);
         useremail.setText(email);
         set_picList();
-
 
     }
 //    protected void onPostCreate(Bundle savedInstanceState){
@@ -160,6 +164,8 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         if (itemid == R.id.nav_dashboard) {
             // Handle the dashboard action
             Bundle dash_bundel = new Bundle();
+
+
 
 
             if(list!=null) {

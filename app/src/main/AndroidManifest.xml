@@ -58,7 +58,8 @@
 
         <activity android:name=".Picmore_listviewActivity" />
         <activity android:name=".pic_detailActivity" />
-        <activity android:name=".Editmemo_Activity"></activity>
+        <activity android:name=".Editmemo_Activity" />
+        <activity android:name=".getprofile"></activity>
     </application>
 
 </manifest>

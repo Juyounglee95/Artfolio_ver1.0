@@ -142,6 +142,7 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
         picnum= getArguments().getInt("picnum");
         if(mode.equals("notFirst")) {
             pic_names = getArguments().getStringArray("piclist");
+
         }
      //   pic_names= ((MainActivity_user)getActivity()).update_list();
         Log.e("onCreateView", "View Create");
