@@ -26,9 +26,10 @@ import java.util.concurrent.ExecutionException;
 public class main_login extends AppCompatActivity {
     EditText edit_id, edit_pw;
     String user_id, user_pw;
-
+    String mode;
     String [] wholeuser_name;
     String [] whole_profile;
+    int [] fa_totalnum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class main_login extends AppCompatActivity {
         edit_id = (EditText)findViewById(R.id.edit_id);
         edit_pw = (EditText)findViewById(R.id.edit_pw);
         Intent intent = getIntent();
-
+        mode = intent.getExtras().getString("mode");
 
     }
 
@@ -79,23 +80,28 @@ public class main_login extends AppCompatActivity {
             String [] list = userInfo[5].split("<br>");
             wholeuser_name= new String[list.length];
             whole_profile= new String[list.length];
+            fa_totalnum = new int[list.length];
             for(int i =0; i<list.length; i++){
                 String[] strings = list[i].split("/");
                 wholeuser_name[i]=strings[0];
                 whole_profile[i]= strings[1];
+                fa_totalnum[i] = Integer.parseInt(strings[2]);
+
             }
 
-            Intent intent= new Intent(main_login.this, MainActivity_user.class);
-            intent.putExtra("name", name);
-            intent.putExtra("id", id);
-            intent.putExtra("phone", phone);
-            intent.putExtra("email", email);
-            intent.putExtra("profile", profile);
-            intent.putExtra("wholelist", wholeuser_name);
-            intent.putExtra("wholeprofile", whole_profile);
-            startActivity(intent);
+                Intent intent = new Intent(main_login.this, MainActivity_user.class);
+                intent.putExtra("name", name);
+                intent.putExtra("id", id);
+                intent.putExtra("phone", phone);
+                intent.putExtra("email", email);
+                intent.putExtra("profile", profile);
+                intent.putExtra("wholelist", wholeuser_name);
+                intent.putExtra("wholeprofile", whole_profile);
+                intent.putExtra("mode", mode);
+                intent.putExtra("fa_numlist", fa_totalnum);
+                startActivity(intent);
 
-            finish();
+                finish();
 
 
         } catch (NullPointerException e) {
@@ -113,7 +119,12 @@ public class main_login extends AppCompatActivity {
             String value = "ID="+user_id+"&PW="+user_pw+"";
             Log.e("POST",value);
             try {
-                URL url = new URL("http://54.226.200.206/login.php");
+                URL url;
+                if(mode.equals("user")){
+                url = new URL("http://54.226.200.206/login.php");}
+                else{
+                    url = new URL("http://54.226.200.206/login_agency.php");
+                }
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 con.setRequestMethod("POST");
@@ -166,7 +177,10 @@ public class main_login extends AppCompatActivity {
             else{
 
                 Toast.makeText(getApplicationContext(), "Login Success. Welcome", Toast.LENGTH_SHORT).show();
+
                 getUserInfo(data);
+
+
             }
 
         }

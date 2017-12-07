@@ -46,9 +46,12 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
     private CharSequence mTitle;
     private Dashboard_frag Dashboard_frag;
     private Home_frag Home_frag;
+    private favorite_frag favorite_frag;
     String list[];
     String userlist[];
     String profilelist[];
+    String mode;
+    int fa_totalnum [];
     ArrayList<String> piclist = new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,20 +64,26 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         profile = intent.getExtras().getString("profile");
         userlist= intent.getExtras().getStringArray("wholelist");
         profilelist= intent.getExtras().getStringArray("wholeprofile");
-
+        fa_totalnum= intent.getExtras().getIntArray("fa_numlist");
+        mode = intent.getExtras().getString("mode");
+        if(mode.equals("agency")){
+            this.setTitle("ART-FOLIO AGENCY");
+        }
        // System.out.println(name);
         setContentView(R.layout.activity_main_user);
 
 
         Dashboard_frag =  Dashboard_frag.newInstance();
         Home_frag = Home_frag.newInstance();
+        favorite_frag = favorite_frag.newInstance();
         Bundle home_bundle = new Bundle();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         home_bundle.putString("loginID", id);
         home_bundle.putStringArray("userlist", userlist);
         home_bundle.putStringArray("wholeprofile", profilelist);
+        home_bundle.putIntArray("fa_numlist", fa_totalnum);
         Home_frag.setArguments(home_bundle);
-        transaction.add(R.id.container, Home_frag);
+        transaction.replace(R.id.container, Home_frag);
 
         transaction.addToBackStack(null);
         transaction.commit();
@@ -83,22 +92,22 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Upload your work!", Snackbar.LENGTH_LONG)
-                        .setAction(
-                "UPLOAD", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        Toast.makeText(MainActivity_user.this, "Add work activity", Toast.LENGTH_SHORT).show();
-
-                    }
-                }).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Upload your work!", Snackbar.LENGTH_LONG)
+//                        .setAction(
+//                "UPLOAD", new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//
+//                        Toast.makeText(MainActivity_user.this, "Add work activity", Toast.LENGTH_SHORT).show();
+//
+//                    }
+//                }).show();
+//            }
+//        });
         // mTitle=mDrawerTitle=getTitle();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -182,9 +191,6 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
             // Handle the dashboard action
             Bundle dash_bundel = new Bundle();
 
-
-
-
             if(list!=null) {
                 dash_bundel.putString("initial", "notFirst");
                 dash_bundel.putString("id", id);
@@ -203,13 +209,33 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
 
                 //dash_bundel.putStringArray("piclist", list);
 
-
             }
 
             Dashboard_frag.setArguments(dash_bundel);
             transaction.replace(R.id.container, Dashboard_frag);
 
         } else if (itemid == R.id.nav_favorite) {
+            favorite_listInfo favorite_listInfo = new favorite_listInfo();
+
+            String value = id+","+id;
+            try {
+                String in_falist = favorite_listInfo.execute(value).get();
+                if(!in_falist.equals("null")){
+                    String [] list = in_falist.split("/");
+                    //list[list.length-1] == null
+                    Bundle favorite_bundle = new Bundle();
+                    favorite_bundle.putStringArray("falist", list);
+                    favorite_bundle.putString("id", id);
+                    favorite_frag.setArguments(favorite_bundle);
+                    transaction.replace(R.id.container, favorite_frag);
+
+                }else{
+                    Toast.makeText(MainActivity_user.this, "There is no favorite artist", Toast.LENGTH_SHORT).show();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
 
         } else if (itemid == R.id.nav_home) {
             transaction.replace(R.id.container, Home_frag);

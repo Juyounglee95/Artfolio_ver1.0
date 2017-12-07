@@ -7,10 +7,19 @@ package com.example.user.artfolio_ver10;
 public class userlist_item {
     private String image_url;
     private String user_name;
-
-    public userlist_item(String image_url, String user_name) {
+    private int fa_totalnum;
+    public userlist_item(String image_url, String user_name, int fa_totalnum) {
         this.image_url = image_url;
         this.user_name = user_name;
+        this.fa_totalnum = fa_totalnum;
+    }
+
+    public int getFa_totalnum() {
+        return fa_totalnum;
+    }
+
+    public void setFa_totalnum(int fa_totalnum) {
+        this.fa_totalnum = fa_totalnum;
     }
 
     public String getUser_name() {

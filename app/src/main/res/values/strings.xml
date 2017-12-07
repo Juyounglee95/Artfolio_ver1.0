@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Artfolio_ver1.0</string>
-    <string name="title_activity_main_user">ART-FOLIO HOME</string>
+    <string name="title_activity_main_user">ART-FOLIO ARTIST</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

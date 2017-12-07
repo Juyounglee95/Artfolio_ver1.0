@@ -3,10 +3,7 @@ package com.example.user.artfolio_ver10;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,8 +16,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.RequestManager;
 
-import org.w3c.dom.Text;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,86 +25,82 @@ import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.channels.InterruptedByTimeoutException;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Created by user on 2017-12-03.
+ * Created by user on 2017-12-07.
  */
 
-public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popular.ViewHolder>{
-    String loginID;
-    Context context;
-    ArrayList<userlist_item> userlist_items;
-   // int itemLayout;
-    ImageView popular_profile;
-    TextView popular_name;
-    homeAdapter_popular.ViewHolder viewHolder;
+public class myfavorite_list_adapter extends RecyclerView.Adapter<myfavorite_list_adapter.ViewHolder>  {
+    ArrayList<myfavorite_list_item> myfavorite_list_items;
+    ImageView favorite_profile;
+    TextView favorite_name;
     RequestManager mRequestManager;
     String id;
+    public View view;
+    Context context;
+    String loginID;
     String []list;
     int picList_size;
-   // String name;
-   // String path;
-
-    public homeAdapter_popular(Context context, ArrayList<userlist_item> userlist_items , RequestManager requestManager){
+    public myfavorite_list_adapter(Context context, ArrayList<myfavorite_list_item> myfavorite_list_items, RequestManager requestManager) {
         this.context = context;
-        this.userlist_items= userlist_items;
+        this.myfavorite_list_items = myfavorite_list_items;
+        this.mRequestManager = requestManager;
+    }
+    @Override
+    public myfavorite_list_adapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        mRequestManager= requestManager;
-
-
-
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.favorite_list, parent,false);
+        // ViewHolder vh = new ViewHolder(view);
+        return new myfavorite_list_adapter.ViewHolder(view);
     }
     public String setLoginID(String loginID){
         return this.loginID = loginID;
     }
-    @Override
-    public homeAdapter_popular.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.userlist_popular_item,viewGroup,false);
-       // ViewHolder vh = new ViewHolder(view);
-        return new homeAdapter_popular.ViewHolder(view);
-    }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-         // super.onBindViewHolder(viewHolder, position);
-        userlist_item item =userlist_items.get(position);
-        if((userlist_items.get(position).getImage_url()).equals("null")){
-            viewHolder.img.setImageResource(R.drawable.kakao_default_profile_image);
+    public void onBindViewHolder(myfavorite_list_adapter.ViewHolder holder, final int position) {
+        myfavorite_list_item item =myfavorite_list_items.get(position);
+//        if((userlist_items.get(position).getImage_url()).equals("null")){
+//            viewHolder.img.setImageResource(R.drawable.kakao_default_profile_image);
+//        }else {
+        if((myfavorite_list_items.get(position).getProfile_url()).equals("null")){
+            holder.img.setImageResource(R.drawable.kakao_default_profile_image);
         }else {
             mRequestManager
-                    .load(userlist_items.get(position).getImage_url())
-                    .into(viewHolder.img);
+                    .load(myfavorite_list_items.get(position).getProfile_url())
+                    .into(holder.img);
         }
-        String fanum = Integer.toString(item.getFa_totalnum());
-        viewHolder.text.setText(item.getUser_name());
-        viewHolder.num.setText("FAVORITE-"+fanum);
-        viewHolder.cv.setOnClickListener(new View.OnClickListener() {
+        holder.name.setText(myfavorite_list_items.get(position).getUser_name());
+        holder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userlist_item item =userlist_items.get(position);
+                myfavorite_list_item item =myfavorite_list_items.get(position);
 
-               //  Toast.makeText(context, "Recycle Click" , Toast.LENGTH_SHORT).show();
-                id = userlist_items.get(position).getUser_name();
+                //  Toast.makeText(context, "Recycle Click" , Toast.LENGTH_SHORT).show();
+                id = myfavorite_list_items.get(position).getUser_name();
 //                path = piclist_itemArrayList.get(position).getImage_url();
                 get_piclist();
 
 
             }
         });
-//        viewHolder.text.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                piclist_item item =piclist_itemArrayList.get(position);
-//
-//                name = piclist_itemArrayList.get(position).getImage_name();
+        holder.img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myfavorite_list_item item =myfavorite_list_items.get(position);
+
+                //  Toast.makeText(context, "Recycle Click" , Toast.LENGTH_SHORT).show();
+                id = myfavorite_list_items.get(position).getUser_name();
 //                path = piclist_itemArrayList.get(position).getImage_url();
-//                setMemo();
-//            }
-//        });
+                get_piclist();
+
+
+            }
+        });
+
+
 
     }
     public void get_piclist(){
@@ -132,11 +123,11 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
             super.onPreExecute();
         }
 
-        protected String doInBackground(String... unuesed){
+        protected String doInBackground(String... unuesed) {
 
             String data = "";
-            String value = "ID="+id+"";
-            Log.e("POST",value);
+            String value = "ID=" + id + "";
+            Log.e("POST", value);
             try {
 
 
@@ -161,14 +152,12 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
                 in = new BufferedReader(new InputStreamReader(is), 8 * 1024);
                 String line = null;
                 StringBuilder buff = new StringBuilder();
-                while ( ( line = in.readLine() ) != null )
-                {
+                while ((line = in.readLine()) != null) {
                     buff.append(line + "\n");
                 }
                 data = buff.toString().trim();
                 //System.out.println(data);
-                Log.e("Path data",data);
-
+                Log.e("Path data", data);
 
 
             } catch (MalformedURLException e) {
@@ -187,34 +176,33 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
             asyncDialog.dismiss();
             //System.out.print(data);
             // data = data.toString();
-            if(data.equals("null")){
+            if (data.equals("null")) {
                 Toast.makeText(context, "The dashboard is empty", Toast.LENGTH_SHORT).show();
-            }
-            else{
+            } else {
                 try {
                     String string = data;
 
                     list = string.split("<br>");
 
-                    picList_size=list.length;
+                    picList_size = list.length;
                     favorite_listInfo favorite_listInfo = new favorite_listInfo();
                     Boolean added = false;
-                    String fa_num ="0";
-                    String value = loginID+","+id;
+                    String fa_num = "0";
+                    String value = loginID + "," + id;
                     String in_falist = favorite_listInfo.execute(value).get();
 
-                    if(!in_falist.equals("null")){
-                        String [] list = in_falist.split("/");
-                        for(int i =0; i<list.length-1; i++){
-                            if(id.equals(list[i])){
+                    if (!in_falist.equals("null")) {
+                        String[] list = in_falist.split("/");
+                        for (int i = 0; i < list.length - 1; i++) {
+                            if (id.equals(list[i])) {
                                 added = true;
-                                fa_num = list[list.length-1];
+                                fa_num = list[list.length - 1];
                                 break;
                             }
                         }
 
                     }
-                    Intent intent = new Intent(context,otherdash_activity.class);
+                    Intent intent = new Intent(context, otherdash_activity.class);
                     intent.putExtra("piclist", list);
                     intent.putExtra("picnum", picList_size);
                     intent.putExtra("id", id);
@@ -226,7 +214,7 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                     //Log.d(TAG, "showResult : ", e);
-                }catch (Exception e ){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 // Toast.makeText(getApplicationContext(), "download success", Toast.LENGTH_SHORT).show();
@@ -234,36 +222,34 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
             }
 
         }
-
-
-
-
     }
-
-
 
     @Override
     public int getItemCount() {
-        return userlist_items.size();
+        return myfavorite_list_items.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-
+    class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView img;
-        public TextView text;
-        public TextView num;
-        public CardView cv;
-        //  public TextView textTitle;
+        public TextView name;
+
 
         public ViewHolder(View itemView){
             super(itemView);
-
+            view=itemView;
             //   item = itemView;
-            cv = (CardView) itemView.findViewById(R.id.cardview);
-            img = (ImageView) itemView.findViewById(R.id.popular_profile);
-            text= (TextView) itemView.findViewById(R.id.popular_name);
-            num = (TextView)itemView.findViewById(R.id.fa_totalnum);
-        }
 
+            name = (TextView) itemView.findViewById(R.id.favorite_name);
+            img = (ImageView) itemView.findViewById(R.id.favorite_profile);
+
+        }
     }
 }
+
+
+
+
+
+
+
+

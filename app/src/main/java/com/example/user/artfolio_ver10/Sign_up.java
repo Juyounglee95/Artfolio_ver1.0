@@ -25,6 +25,7 @@ import java.net.URL;
 public class Sign_up extends AppCompatActivity {
     EditText edit_name, edit_id, edit_pw, edit_phone, edit_email;
     String user_name,user_id, user_pw, user_phone, user_email, profile_path;
+    String mode;
   //  ImageView profile;
     String userprofile;
     private static final int PICK_FROM_CAMERA = 0;
@@ -42,6 +43,7 @@ public class Sign_up extends AppCompatActivity {
         edit_email = (EditText)findViewById(R.id.edit_email);
        // profile =(ImageView)findViewById(R.id.profile_picture);
         Intent intent = getIntent();
+        mode = intent.getExtras().getString("mode");
 
     }
     public void signup(View view){
@@ -114,9 +116,20 @@ public class Sign_up extends AppCompatActivity {
             protected String doInBackground(String... unuesed){
 
                 String data = "";
-                String value = "Name="+user_name+"&ID="+user_id+"&PW="+user_pw+"&Phone="+user_phone+"&Email="+user_email+"";
+                String value="";
+                if(mode.equals("user")) {
+                  value = "Name=" + user_name + "&ID=" + user_id + "&PW=" + user_pw + "&Phone=" + user_phone + "&Email=" + user_email + "";
+                }else{
+                    value = "company_name=" + user_name + "&ID=" + user_id + "&PW=" + user_pw + "&Phone=" + user_phone + "&Email=" + user_email + "";
+                }
+
                 try {
-                    URL url = new URL("http://54.226.200.206/join.php");
+                    URL url = null;
+                    if(mode.equals("user")){
+                     url = new URL("http://54.226.200.206/join.php");}
+                     else{
+                        url = new URL("http://54.226.200.206/join_agency.php");
+                    }
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     con.setRequestMethod("POST");

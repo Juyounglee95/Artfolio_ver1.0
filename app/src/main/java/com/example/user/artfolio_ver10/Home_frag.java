@@ -24,6 +24,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by user on 2017-11-25.
@@ -31,10 +33,11 @@ import java.util.ArrayList;
 
 public class Home_frag extends android.support.v4.app.Fragment {
     ArrayList<userlist_item> data;
+    ArrayList<userlist_item> everydata;
     String loginID;
     String userlist[];
     String profilelist[];
-
+    int fa_totalnum[];
     private RecyclerView mRecyclerView_popular;
     private homeAdapter_popular mAdapter_popular;
     private GridLayoutManager gridLayoutManager;
@@ -69,12 +72,30 @@ public class Home_frag extends android.support.v4.app.Fragment {
         loginID = getArguments().getString("loginID");
         userlist = getArguments().getStringArray("userlist");
         profilelist = getArguments().getStringArray("wholeprofile");
+        fa_totalnum= getArguments().getIntArray("fa_numlist");
         data = new ArrayList<>();
 
         for(int i=0; i<userlist.length; i++){
-            data.add(new userlist_item(profilelist[i],userlist[i]));
+            if(fa_totalnum[i]>0) {
+                data.add(new userlist_item(profilelist[i], userlist[i], fa_totalnum[i]));
+            }
          //   System.out.println(profilelist[i] + "///"+ userlist[i]);
         }
+        Collections.sort(data, new Comparator<userlist_item>() {
+            @Override
+            public int compare(userlist_item item1, userlist_item item2) {
+
+                if(item1.getFa_totalnum()>item2.getFa_totalnum()){
+                    return 1;
+                }else if(item1.getFa_totalnum()<item2.getFa_totalnum()){
+                    return -1;
+                }else{
+                    return 0;
+                }
+
+            }
+        });
+        Collections.reverse(data);
             mRecyclerView_popular = (RecyclerView) view.findViewById(R.id.popular_view);
             gridLayoutManager = new GridLayoutManager(getContext(),4);
 
@@ -85,6 +106,41 @@ public class Home_frag extends android.support.v4.app.Fragment {
                 mAdapter_popular.setLoginID(loginID);
                 mRecyclerView_popular.setAdapter(mAdapter_popular);
             }
+
+        everydata = new ArrayList<>();
+
+        for(int i=0; i<userlist.length; i++){
+
+                everydata.add(new userlist_item(profilelist[i], userlist[i], fa_totalnum[i]));
+
+            //   System.out.println(profilelist[i] + "///"+ userlist[i]);
+        }
+        Collections.sort(everydata, new Comparator<userlist_item>() {
+            @Override
+            public int compare(userlist_item item1, userlist_item item2) {
+
+                if(item1.getFa_totalnum()>item2.getFa_totalnum()){
+                    return 1;
+                }else if(item1.getFa_totalnum()<item2.getFa_totalnum()){
+                    return -1;
+                }else{
+                    return 0;
+                }
+
+            }
+        });
+        Collections.reverse(everydata);
+        mRecyclerView_popular = (RecyclerView) view.findViewById(R.id.artist_view);
+        gridLayoutManager = new GridLayoutManager(getContext(),4);
+
+        mRecyclerView_popular.setLayoutManager(gridLayoutManager);
+        mGlideRequestManager = Glide.with(Home_frag.this);
+        if(data!=null) {
+            mAdapter_popular = new homeAdapter_popular(getContext(), everydata, mGlideRequestManager);
+            mAdapter_popular.setLoginID(loginID);
+            mRecyclerView_popular.setAdapter(mAdapter_popular);
+        }
+
         return this.view=view;
     }
 
