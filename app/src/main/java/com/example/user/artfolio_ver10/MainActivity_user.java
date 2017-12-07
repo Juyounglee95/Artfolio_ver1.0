@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -17,9 +18,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.user.artfolio_ver10.R;
 
 import org.w3c.dom.Text;
@@ -35,8 +38,9 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity_user extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    String name, id, phone, email;
+    String name, id, phone, email,profile;
     TextView userid, useremail;
+    ImageView userprofile;
     int picList_size;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -44,6 +48,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
     private Home_frag Home_frag;
     String list[];
     String userlist[];
+    String profilelist[];
     ArrayList<String> piclist = new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +58,11 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         id = intent.getExtras().getString("id");
         phone = intent.getExtras().getString("phone");
         email = intent.getExtras().getString("email");
-        userlist= intent.getExtras().getStringArray("userlist");
-        System.out.println(name);
+        profile = intent.getExtras().getString("profile");
+        userlist= intent.getExtras().getStringArray("wholelist");
+        profilelist= intent.getExtras().getStringArray("wholeprofile");
+
+       // System.out.println(name);
         setContentView(R.layout.activity_main_user);
 
 
@@ -62,7 +70,9 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         Home_frag = Home_frag.newInstance();
         Bundle home_bundle = new Bundle();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        home_bundle.putString("loginID", id);
         home_bundle.putStringArray("userlist", userlist);
+        home_bundle.putStringArray("wholeprofile", profilelist);
         Home_frag.setArguments(home_bundle);
         transaction.add(R.id.container, Home_frag);
 
@@ -106,6 +116,13 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         userid.setText(id);
         useremail= (TextView)nav_header_view.findViewById(R.id.user_email_nav);
         useremail.setText(email);
+        if(profile.equals("null")){
+            userprofile=(ImageView)nav_header_view.findViewById(R.id.user_profile_nav);
+            userprofile.setImageResource(R.drawable.kakao_default_profile_image);
+        }else{
+            profile = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/"+profile;
+            Glide.with(nav_header_view).load(profile).into(userprofile);
+        }
         set_picList();
 
     }

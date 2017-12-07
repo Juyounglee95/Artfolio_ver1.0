@@ -27,7 +27,8 @@ public class main_login extends AppCompatActivity {
     EditText edit_id, edit_pw;
     String user_id, user_pw;
 
-
+    String [] wholeuser_name;
+    String [] whole_profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,18 +72,27 @@ public class main_login extends AppCompatActivity {
             String id = userInfo[1]; // ID
             String phone = userInfo[2]; // phone
             String email = userInfo[3]; // email
-//
+            String profile = userInfo[4];
 //            for(int i =0 ; i <userInfo.length; i++){
 //                System.out.println(userInfo[i]);
 //            }
-            String [] wholeuser = userInfo[4].split("/");
+            String [] list = userInfo[5].split("<br>");
+            wholeuser_name= new String[list.length];
+            whole_profile= new String[list.length];
+            for(int i =0; i<list.length; i++){
+                String[] strings = list[i].split("/");
+                wholeuser_name[i]=strings[0];
+                whole_profile[i]= strings[1];
+            }
 
             Intent intent= new Intent(main_login.this, MainActivity_user.class);
             intent.putExtra("name", name);
             intent.putExtra("id", id);
             intent.putExtra("phone", phone);
             intent.putExtra("email", email);
-            intent.putExtra("userlist", wholeuser);
+            intent.putExtra("profile", profile);
+            intent.putExtra("wholelist", wholeuser_name);
+            intent.putExtra("wholeprofile", whole_profile);
             startActivity(intent);
 
             finish();

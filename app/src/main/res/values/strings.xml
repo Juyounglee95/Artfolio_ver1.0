@@ -9,4 +9,7 @@
 
     <string name="facebook_app_id">138098100284646</string>
     <string name="kakao_app_key">99e41d8d8af2e374373a29fec6914324</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

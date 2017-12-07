@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,7 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class pic_detailActivity extends AppCompatActivity {
-String path, name, memo_text;
+String path, name, memo_text, mode;
 ImageView image ;
 TextView memo;
 TextView imagename;
@@ -33,6 +35,12 @@ TextView imagename;
         path = intent.getExtras().getString("path");
         name = intent.getExtras().getString("name");
         memo_text = intent.getExtras().getString("memo");
+
+        mode = intent.getExtras().getString("mode");
+        if(mode.equals("otheruser")){
+            ImageButton bt = (ImageButton)findViewById(R.id.sendImage_server);
+            bt.setVisibility(View.GONE);
+        }
     //    setMemo();
         image= (ImageView)findViewById(R.id.detail_image);
         memo =(TextView)findViewById(R.id.memo);

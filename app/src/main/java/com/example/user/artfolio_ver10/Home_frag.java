@@ -1,8 +1,10 @@
 package com.example.user.artfolio_ver10;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,10 +31,13 @@ import java.util.ArrayList;
 
 public class Home_frag extends android.support.v4.app.Fragment {
     ArrayList<userlist_item> data;
+    String loginID;
     String userlist[];
+    String profilelist[];
+
     private RecyclerView mRecyclerView_popular;
-    private RecyclerView.Adapter mAdapter_popular;
-    private LinearLayoutManager linearLayoutManager;
+    private homeAdapter_popular mAdapter_popular;
+    private GridLayoutManager gridLayoutManager;
     public RequestManager mGlideRequestManager;
     public View view;
     public static Home_frag newInstance() {
@@ -61,21 +66,28 @@ public class Home_frag extends android.support.v4.app.Fragment {
         View view = inflater.inflate(R.layout.home_frag, null);
       //  getuserDB();
        // pic_names = getArguments().getStringArray("piclist");
+        loginID = getArguments().getString("loginID");
         userlist = getArguments().getStringArray("userlist");
+        profilelist = getArguments().getStringArray("wholeprofile");
         data = new ArrayList<>();
+
         for(int i=0; i<userlist.length; i++){
-            data.add(new userlist_item("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/JPEG_xyz_20171129_200639.jpg",userlist[i]));
+            data.add(new userlist_item(profilelist[i],userlist[i]));
+         //   System.out.println(profilelist[i] + "///"+ userlist[i]);
         }
             mRecyclerView_popular = (RecyclerView) view.findViewById(R.id.popular_view);
-            linearLayoutManager = new LinearLayoutManager(getContext());
-            linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-            mRecyclerView_popular.setLayoutManager(linearLayoutManager);
+            gridLayoutManager = new GridLayoutManager(getContext(),4);
+
+            mRecyclerView_popular.setLayoutManager(gridLayoutManager);
             mGlideRequestManager = Glide.with(Home_frag.this);
             if(data!=null) {
                 mAdapter_popular = new homeAdapter_popular(getContext(), data, mGlideRequestManager);
+                mAdapter_popular.setLoginID(loginID);
                 mRecyclerView_popular.setAdapter(mAdapter_popular);
             }
         return this.view=view;
     }
+
+
 
 }
