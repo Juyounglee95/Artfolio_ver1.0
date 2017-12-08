@@ -60,7 +60,8 @@
         <activity android:name=".pic_detailActivity" />
         <activity android:name=".Editmemo_Activity" />
         <activity android:name=".getprofile" />
-        <activity android:name=".otherdash_activity"></activity>
+        <activity android:name=".otherdash_activity" />
+        <activity android:name=".export_zip"></activity>
     </application>
 
 </manifest>

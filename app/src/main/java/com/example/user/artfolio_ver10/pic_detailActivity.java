@@ -1,6 +1,7 @@
 package com.example.user.artfolio_ver10;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -54,6 +56,8 @@ TextView imagename;
 
 
     }
+
+
     public void edit_memo(View view){
         Intent intent = new Intent(this, Editmemo_Activity.class);
         intent.putExtra("path", path);

@@ -1,18 +1,35 @@
 package com.example.user.artfolio_ver10;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.target.BaseTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,6 +46,7 @@ public class Picmore_listviewActivity extends AppCompatActivity  {
     String name_list[];
     //String path, memo;
     RequestManager  mGlideRequestManager;
+    TransferUtility transferUtility;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -68,7 +86,31 @@ public class Picmore_listviewActivity extends AppCompatActivity  {
 //            picmoreListAdapter = new PicmoreList_Adapter(Picmore_listviewActivity.this,
 //                    data, mGlideRequestManager);
             //listView.setAdapter(picmoreListAdapter);
+            for(int i=0; i<name_list.length; i++) {
+                final String file = name_list[i];
+                 BaseTarget target = new BaseTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
+                        // do something with the bitmap
+                        // for demonstration purposes, let's set it to an imageview
+                       saveImage(bitmap, file);
+                    }
 
+                    @Override
+                    public void getSize(SizeReadyCallback cb) {
+                        cb.onSizeReady(SIZE_ORIGINAL, SIZE_ORIGINAL);
+                    }
+
+                    @Override
+                    public void removeCallback(SizeReadyCallback cb) {}
+                };
+
+                Glide.with(this)
+                        .asBitmap()
+                        .load(image_list[i])
+                        .into(target);
+
+            }
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
@@ -81,6 +123,43 @@ public class Picmore_listviewActivity extends AppCompatActivity  {
         }
 
 
+    }
+    private String saveImage(Bitmap image, String filename) {
+        String savedImagePath = null;
+        String name = filename;
+
+        String imageFileName = name ;
+        File storageDir = new File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                        + "/Pictures", "Artfolio");
+        boolean success = true;
+        if (!storageDir.exists()) {
+            success = storageDir.mkdirs();
+        }
+        if (success) {
+            File imageFile = new File(storageDir, imageFileName);
+            savedImagePath = imageFile.getAbsolutePath();
+            try {
+                OutputStream fOut = new FileOutputStream(imageFile);
+                image.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Add the image to the system gallery
+          //  galleryAddPic(savedImagePath);
+//            Toast.makeText(getContext(), "IMAGE SAVED", Toast.LENGTH_LONG).show();
+        }
+        return savedImagePath;
+    }
+
+    private void galleryAddPic(String imagePath) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(imagePath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        sendBroadcast(mediaScanIntent);
     }
 
 

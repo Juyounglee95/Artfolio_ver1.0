@@ -194,7 +194,7 @@ public class getImage extends AppCompatActivity  {
         startActivityForResult(intent, PICK_FROM_GALLERY);
 
     }
-    private void galleryAddPic(){
+    public void galleryAddPic(View v){
         Log.i("galleryAddPic", "Call");
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         // 해당 경로에 있는 파일을 객체화(새로 파일을 만든다는 것으로 이해하면 안 됨)
@@ -259,7 +259,7 @@ public class getImage extends AppCompatActivity  {
 
                     //if(data.getData() != null){
                         try {
-                            galleryAddPic();
+                          //  galleryAddPic();
 
                           //  imageView.setImageURI(imageUri);
                             //imageName.setText(image_name);

@@ -47,6 +47,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
     private Dashboard_frag Dashboard_frag;
     private Home_frag Home_frag;
     private favorite_frag favorite_frag;
+    private export_frag export_frag;
     String list[];
     String userlist[];
     String profilelist[];
@@ -76,6 +77,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         Dashboard_frag =  Dashboard_frag.newInstance();
         Home_frag = Home_frag.newInstance();
         favorite_frag = favorite_frag.newInstance();
+        export_frag = export_frag.newInstance();
         Bundle home_bundle = new Bundle();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         home_bundle.putString("loginID", id);
@@ -239,7 +241,28 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
 
         } else if (itemid == R.id.nav_home) {
             transaction.replace(R.id.container, Home_frag);
-        } else if (itemid == R.id.nav_export) {
+        }
+        else if (itemid == R.id.nav_export) {
+            Bundle export_bundle = new Bundle();
+
+            if(list!=null) {
+
+                export_bundle.putString("id", id);
+                export_bundle.putString("email", email);
+                //export_bundle.putInt("picnum", picList_size);
+
+                export_bundle.putStringArray("piclist", list);
+
+                export_frag.setArguments(export_bundle);
+                transaction.replace(R.id.container, export_frag);
+                // Dashboard_frag.setArguments(dash_bundel);
+                //transaction.replace(R.id.container, Dashboard_frag);
+            }else{
+
+                Toast.makeText(MainActivity_user.this, "Your work does not exist! Please upload your work", Toast.LENGTH_LONG).show();
+
+            }
+
 
         } else if (itemid == R.id.nav_manage) {
 

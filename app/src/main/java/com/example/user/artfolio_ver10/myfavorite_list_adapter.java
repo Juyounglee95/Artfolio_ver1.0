@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -65,11 +66,18 @@ public class myfavorite_list_adapter extends RecyclerView.Adapter<myfavorite_lis
 //        if((userlist_items.get(position).getImage_url()).equals("null")){
 //            viewHolder.img.setImageResource(R.drawable.kakao_default_profile_image);
 //        }else {
+        RequestOptions requestOptions = new RequestOptions();
         if((myfavorite_list_items.get(position).getProfile_url()).equals("null")){
-            holder.img.setImageResource(R.drawable.kakao_default_profile_image);
+           // holder.img.setImageResource(R.drawable.kakao_default_profile_image);
+            mRequestManager
+                    .load(R.drawable.kakao_default_profile_image)
+                    .apply(requestOptions.circleCrop())
+                    .into(holder.img);
         }else {
+
             mRequestManager
                     .load(myfavorite_list_items.get(position).getProfile_url())
+                    .apply(requestOptions.circleCrop())
                     .into(holder.img);
         }
         holder.name.setText(myfavorite_list_items.get(position).getUser_name());

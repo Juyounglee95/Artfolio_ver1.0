@@ -1,1 +1,1 @@
-include ':app'
+include ':app', ':zip4j_1.3.2'

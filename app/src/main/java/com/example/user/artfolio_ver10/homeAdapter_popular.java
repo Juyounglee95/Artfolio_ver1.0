@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.w3c.dom.Text;
 
@@ -77,12 +78,17 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
          // super.onBindViewHolder(viewHolder, position);
         userlist_item item =userlist_items.get(position);
+        RequestOptions requestOptions = new RequestOptions();
         if((userlist_items.get(position).getImage_url()).equals("null")){
-            viewHolder.img.setImageResource(R.drawable.kakao_default_profile_image);
+            mRequestManager
+                    .load(R.drawable.kakao_default_profile_image)
+                    .apply(requestOptions.circleCrop())
+                    .into(viewHolder.img);
         }else {
             mRequestManager
                     .load(userlist_items.get(position).getImage_url())
                     .into(viewHolder.img);
+
         }
         String fanum = Integer.toString(item.getFa_totalnum());
         viewHolder.text.setText(item.getUser_name());

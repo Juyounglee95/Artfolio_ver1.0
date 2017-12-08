@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,7 +85,7 @@ public class PicmoreList_Adapter extends RecyclerView.Adapter<PicmoreList_Adapte
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         //  super.onBindViewHolder(viewHolder, position);
-        piclist_item item =piclist_itemArrayList.get(position);
+        final piclist_item item =piclist_itemArrayList.get(position);
 
         mRequestManager
                 .load(piclist_itemArrayList.get(position).getImage_url())
@@ -107,12 +110,18 @@ public class PicmoreList_Adapter extends RecyclerView.Adapter<PicmoreList_Adapte
             @Override
             public void onClick(View view) {
                 piclist_item item =piclist_itemArrayList.get(position);
-
                 name = piclist_itemArrayList.get(position).getImage_name();
                 path = piclist_itemArrayList.get(position).getImage_url();
                 setMemo();
             }
         });
+
+
+
+
+
+
+
 
     }
 
@@ -125,11 +134,13 @@ public class PicmoreList_Adapter extends RecyclerView.Adapter<PicmoreList_Adapte
 
         public ImageView img;
         public TextView text;
+
         //  public TextView textTitle;
 
         public ViewHolder(View itemView){
             super(itemView);
          //   item = itemView;
+
             img = (ImageView) itemView.findViewById(R.id.picmore_item_image);
                text= (TextView) itemView.findViewById(R.id.picmore_item_text);
         }

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Artfolio_ver1.0.iml" filepath="$PROJECT_DIR$/Artfolio_ver1.0.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zip4j_1.3.2/zip4j_1.3.2.iml" filepath="$PROJECT_DIR$/zip4j_1.3.2/zip4j_1.3.2.iml" />
     </modules>
   </component>
 </project>
