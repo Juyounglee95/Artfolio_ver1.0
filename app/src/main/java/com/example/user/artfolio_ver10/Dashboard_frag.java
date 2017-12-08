@@ -306,13 +306,7 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
                 Glide.with(getActivity()).load("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + pic_names[i]).into(picture1);
             }
             // TODO Auto-generated method stub
-//            s3ObjList = s3.listObjects("artfolio-imageupload").getObjectSummaries();
-//            transferRecordMaps.clear();
-//            for (S3ObjectSummary summary : s3ObjList) {
-//                HashMap<String, Object> map = new HashMap<String, Object>();
-//                map.put("key", summary.getKey());
-//                transferRecordMaps.add(map);
-//            }
+
             return null;
 
         }
@@ -322,29 +316,6 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
         }
 
 
-//    public void act_getImage(View v){
-//
-//        new AlertDialog.Builder(this).setTitle("업로드할 이미지 선택")
-//                .setPositiveButton("Camera", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        act_camera();
-//                    }
-//                })
-//                .setNeutralButton("Gallery", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        act_gallery();
-//                    }
-//                })
-//                .setNegativeButton("Back", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        dialogInterface.dismiss();
-//                    }
-//                })
-//                .show();
-//    }
     }
 
 }
