@@ -72,6 +72,11 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         if(mode.equals("agency")){
             this.setTitle("ART-FOLIO AGENCY");
         }
+//        for(int i=0; i<profilelist.length; i++){
+//            if(!profilelist[i].equals("null")){
+//                profilelist[i]= "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/"+profilelist[i];
+//            }
+//        }
        // System.out.println(name);
         setContentView(R.layout.activity_main_user);
 
@@ -135,7 +140,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
 
             userprofile.setImageResource(R.drawable.kakao_default_profile_image);
         }else{
-            profile = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/"+profile;
+          //  profile = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/"+profile;
             Glide.with(nav_header_view).load(profile).into(userprofile);
         }
         set_picList();
@@ -231,6 +236,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
                     String [] list = in_falist.split("/");
                     //list[list.length-1] == null
                     Bundle favorite_bundle = new Bundle();
+                  //  favorite_bundle.putStringArray("profilelist",profilelist);
                     favorite_bundle.putStringArray("falist", list);
                     favorite_bundle.putString("id", id);
                     favorite_frag.setArguments(favorite_bundle);
@@ -302,7 +308,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         if (requestCode == 200) {
             if (data!=null) {
                 profile = data.getStringExtra("profile");
-                Glide.with(this).load("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/"+profile).into(userprofile);
+                Glide.with(this).load(profile).into(userprofile);
                 System.out.println("#####");
 
             }

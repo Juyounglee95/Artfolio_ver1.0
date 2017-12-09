@@ -41,6 +41,7 @@ public class myfavorite_list_adapter extends RecyclerView.Adapter<myfavorite_lis
     public View view;
     Context context;
     String loginID;
+    String profile_path;
     String []list;
     int picList_size;
     public myfavorite_list_adapter(Context context, ArrayList<myfavorite_list_item> myfavorite_list_items, RequestManager requestManager) {
@@ -88,7 +89,7 @@ public class myfavorite_list_adapter extends RecyclerView.Adapter<myfavorite_lis
 
                 //  Toast.makeText(context, "Recycle Click" , Toast.LENGTH_SHORT).show();
                 id = myfavorite_list_items.get(position).getUser_name();
-//                path = piclist_itemArrayList.get(position).getImage_url();
+                profile_path = myfavorite_list_items.get(position).getProfile_url();
                 get_piclist();
 
 
@@ -101,6 +102,7 @@ public class myfavorite_list_adapter extends RecyclerView.Adapter<myfavorite_lis
 
                 //  Toast.makeText(context, "Recycle Click" , Toast.LENGTH_SHORT).show();
                 id = myfavorite_list_items.get(position).getUser_name();
+                profile_path = myfavorite_list_items.get(position).getProfile_url();
 //                path = piclist_itemArrayList.get(position).getImage_url();
                 get_piclist();
 
@@ -214,6 +216,7 @@ public class myfavorite_list_adapter extends RecyclerView.Adapter<myfavorite_lis
                     intent.putExtra("piclist", list);
                     intent.putExtra("picnum", picList_size);
                     intent.putExtra("id", id);
+                    intent.putExtra("profile", profile_path);
                     intent.putExtra("fa_num", fa_num);
                     intent.putExtra("fa_added", added);
                     intent.putExtra("loginID", loginID);

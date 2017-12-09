@@ -238,7 +238,7 @@ public class getImage extends AppCompatActivity  {
                     if (data.getData() != null) {
                         try {
                             File albumFile = null;
-                            albumFile = createImageFile();
+                            albumFile = createImageFile(); //imagefile return
                             photoURI = data.getData();
                             albumURI = Uri.fromFile(albumFile);
                             Log.i("pick image from gallery", absolutePath);

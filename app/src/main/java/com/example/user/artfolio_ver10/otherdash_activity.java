@@ -1,12 +1,14 @@
 package com.example.user.artfolio_ver10;
 
 import android.content.Intent;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -22,7 +24,9 @@ public class otherdash_activity extends AppCompatActivity {
         Boolean added = false;
         String [] piclist;
         String [] image_list;
+        String profile_path;
         TextView id_view, num_view, fa_num_view;
+        ImageView other_profile;
         ArrayList<otherdash_item> data;
         RecyclerView otherdash_view;
         GridLayoutManager gridLayoutManager;
@@ -41,11 +45,17 @@ public class otherdash_activity extends AppCompatActivity {
         listsize= intent.getExtras().getInt("picnum");
         added = intent.getExtras().getBoolean("fa_added");
         fa_num = intent.getExtras().getString("fa_num");
+        profile_path = intent.getExtras().getString("profile");
         id_view= (TextView)findViewById(R.id.other_ID);
         num_view=(TextView)findViewById(R.id.other_totalnum);
         bt_fa=(ImageButton)findViewById(R.id.bt_addfa);
         fa_num_view=(TextView)findViewById(R.id.fa_num);
+        other_profile=(ImageView)findViewById(R.id.other_profile);
+        if(profile_path.equals("null")){
 
+        }else {
+            Glide.with(otherdash_activity.this).load( profile_path).into(other_profile);
+        }
         if(added==true){
             bt_fa.setEnabled(false);
             bt_fa.setImageResource(R.drawable.heart_pink);

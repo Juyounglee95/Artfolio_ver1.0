@@ -82,7 +82,7 @@ public class getprofile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sendPic_server();
-                Toast.makeText(getprofile.this , "설정이 완료되었습니다",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getprofile.this , "Pick complete",Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -305,6 +305,7 @@ public class getprofile extends AppCompatActivity {
         Toast.makeText(this, "Picture uploaded on Server SUCCESS!",
                 Toast.LENGTH_LONG).show();
         Intent intent = new Intent();
+        image_name = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/"+image_name;
         intent.putExtra("profile", image_name);
         setResult(100, intent);
         finish();

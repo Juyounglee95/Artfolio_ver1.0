@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.user.artfolio_ver10.getImage">
+    tools:context="com.example.user.artfolio_ver10.getvideo">
 
     <VideoView
         android:id="@+id/picked_video"
@@ -35,12 +35,12 @@
         app:layout_constraintTop_toBottomOf="@+id/picked_video" />
 
     <Button
-        android:id="@+id/sendImage_server"
+        android:id="@+id/sendVid_server"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:onClick="sendPic_server"
+        android:onClick="sendVid_server"
         android:text="UPLOAD"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -50,7 +50,7 @@
         app:layout_constraintVertical_bias="0.77" />
 
     <EditText
-        android:id="@+id/pic_memo"
+        android:id="@+id/vid_memo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"

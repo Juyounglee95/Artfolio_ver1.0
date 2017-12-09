@@ -51,6 +51,7 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
     String id;
     String []list;
     int picList_size;
+    String profile_path;
    // String name;
    // String path;
 
@@ -87,6 +88,7 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
         }else {
             mRequestManager
                     .load(userlist_items.get(position).getImage_url())
+                    .apply(requestOptions.circleCrop())
                     .into(viewHolder.img);
 
         }
@@ -100,7 +102,7 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
 
                //  Toast.makeText(context, "Recycle Click" , Toast.LENGTH_SHORT).show();
                 id = userlist_items.get(position).getUser_name();
-//                path = piclist_itemArrayList.get(position).getImage_url();
+                profile_path= userlist_items.get(position).getImage_url();
                 get_piclist();
 
 
@@ -223,6 +225,7 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
                     Intent intent = new Intent(context,otherdash_activity.class);
                     intent.putExtra("piclist", list);
                     intent.putExtra("picnum", picList_size);
+                    intent.putExtra("profile", profile_path);
                     intent.putExtra("id", id);
                     intent.putExtra("fa_num", fa_num);
                     intent.putExtra("fa_added", added);

@@ -82,7 +82,7 @@ public class main_login extends AppCompatActivity {
             whole_profile= new String[list.length];
             fa_totalnum = new int[list.length];
             for(int i =0; i<list.length; i++){
-                String[] strings = list[i].split("/");
+                String[] strings = list[i].split("%");
                 wholeuser_name[i]=strings[0];
                 whole_profile[i]= strings[1];
                 fa_totalnum[i] = Integer.parseInt(strings[2]);

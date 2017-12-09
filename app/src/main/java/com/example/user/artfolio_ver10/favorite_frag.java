@@ -79,7 +79,7 @@ public class favorite_frag extends Fragment {
 
             try {
                 String string = profile_path.execute(id).get();
-                profile = string.split("/");
+                profile = string.split("<br>"); //php 에서 path에 "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" 넣어줌
             }catch (Exception e){
                 e.printStackTrace();
             }

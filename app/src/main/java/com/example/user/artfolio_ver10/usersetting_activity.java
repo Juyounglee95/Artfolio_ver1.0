@@ -56,7 +56,7 @@ public class usersetting_activity extends AppCompatActivity {
         Button btnChange = (Button) findViewById(R.id.change);
         Button btnSave = (Button) findViewById(R.id.save);
         if(!profile.equals("null")){
-        Glide.with(this).load("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/"+profile).into(profile_view);}
+        Glide.with(this).load(profile).into(profile_view);}
         userid.setText(id);
         btnChange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +130,7 @@ public class usersetting_activity extends AppCompatActivity {
                 profile = data.getStringExtra("profile");
                 RequestOptions requestOptions = new RequestOptions();
                 requestOptions.placeholder(R.drawable.kakao_default_profile_image);
-                Glide.with(this).setDefaultRequestOptions(requestOptions).load("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/"+profile).into(profile_view);
+                Glide.with(this).setDefaultRequestOptions(requestOptions).load(profile).into(profile_view);
                 System.out.println("#####");
 
             }
