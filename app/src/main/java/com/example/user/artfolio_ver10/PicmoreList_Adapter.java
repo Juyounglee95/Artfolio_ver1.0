@@ -106,7 +106,7 @@ public class PicmoreList_Adapter extends RecyclerView.Adapter<PicmoreList_Adapte
 
             }
         });
-        viewHolder.text.setOnClickListener(new View.OnClickListener() {
+        viewHolder.cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 piclist_item item =piclist_itemArrayList.get(position);
@@ -134,13 +134,13 @@ public class PicmoreList_Adapter extends RecyclerView.Adapter<PicmoreList_Adapte
 
         public ImageView img;
         public TextView text;
-
+        public CardView cv;
         //  public TextView textTitle;
 
         public ViewHolder(View itemView){
             super(itemView);
          //   item = itemView;
-
+            cv= (CardView)itemView.findViewById(R.id.cvItems);
             img = (ImageView) itemView.findViewById(R.id.picmore_item_image);
                text= (TextView) itemView.findViewById(R.id.picmore_item_text);
         }

@@ -83,7 +83,7 @@ public class myfavorite_list_adapter extends RecyclerView.Adapter<myfavorite_lis
                     .into(holder.img);
         }
         holder.name.setText(myfavorite_list_items.get(position).getUser_name());
-        holder.name.setOnClickListener(new View.OnClickListener() {
+        holder.cv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 myfavorite_list_item item =myfavorite_list_items.get(position);
@@ -269,13 +269,13 @@ public class myfavorite_list_adapter extends RecyclerView.Adapter<myfavorite_lis
     class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView img;
         public TextView name;
-
+        public CardView cv;
 
         public ViewHolder(View itemView){
             super(itemView);
             view=itemView;
             //   item = itemView;
-
+            cv = (CardView)itemView.findViewById(R.id.cvItems);
             name = (TextView) itemView.findViewById(R.id.favorite_name);
             img = (ImageView) itemView.findViewById(R.id.favorite_profile);
 
