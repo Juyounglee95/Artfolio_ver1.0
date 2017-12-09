@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.user.artfolio_ver10.R;
+import com.kakao.usermgmt.response.model.User;
 
 import org.w3c.dom.Text;
 
@@ -48,6 +49,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
     private Home_frag Home_frag;
     private favorite_frag favorite_frag;
     private export_frag export_frag;
+    private Usersetting_frag usersetting_frag;
     String list[];
     String userlist[];
     String profilelist[];
@@ -78,6 +80,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         Home_frag = Home_frag.newInstance();
         favorite_frag = favorite_frag.newInstance();
         export_frag = export_frag.newInstance();
+        usersetting_frag = Usersetting_frag.newInstance();
         Bundle home_bundle = new Bundle();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         home_bundle.putString("loginID", id);
@@ -94,7 +97,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+     //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -127,8 +130,9 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         userid.setText(id);
         useremail= (TextView)nav_header_view.findViewById(R.id.user_email_nav);
         useremail.setText(email);
+        userprofile=(ImageView)nav_header_view.findViewById(R.id.user_profile_nav);
         if(profile.equals("null")){
-            userprofile=(ImageView)nav_header_view.findViewById(R.id.user_profile_nav);
+
             userprofile.setImageResource(R.drawable.kakao_default_profile_image);
         }else{
             profile = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/"+profile;
@@ -198,7 +202,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
                 dash_bundel.putString("id", id);
                 dash_bundel.putString("email", email);
                 dash_bundel.putInt("picnum", picList_size);
-
+                dash_bundel.putString("profile", profile);
                 dash_bundel.putStringArray("piclist", list);
 
                // Dashboard_frag.setArguments(dash_bundel);
@@ -207,6 +211,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
                 dash_bundel.putString("initial", "First");
                 dash_bundel.putString("id", id);
                 dash_bundel.putString("email", email);
+                dash_bundel.putString("profile", profile);
                 dash_bundel.putInt("picnum", picList_size);
 
                 //dash_bundel.putStringArray("piclist", list);
@@ -240,6 +245,12 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
 
 
         } else if (itemid == R.id.nav_home) {
+            Bundle home_bundle = new Bundle();
+            home_bundle.putString("loginID", id);
+            home_bundle.putStringArray("userlist", userlist);
+            home_bundle.putStringArray("wholeprofile", profilelist);
+            home_bundle.putIntArray("fa_numlist", fa_totalnum);
+            Home_frag.setArguments(home_bundle);
             transaction.replace(R.id.container, Home_frag);
         }
         else if (itemid == R.id.nav_export) {
@@ -265,6 +276,14 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
 
 
         } else if (itemid == R.id.nav_manage) {
+            Intent intent = new Intent(this, usersetting_activity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("profilepath", profile);
+            startActivityForResult(intent, 200);
+//            Bundle dash_bundle = new Bundle();
+//            dash_bundle.putString("id", id);
+//            usersetting_frag.setArguments(dash_bundle);
+//            transaction.replace(R.id.container, usersetting_frag);
 
         }else if (itemid == R.id.nav_share) {
 
@@ -277,6 +296,17 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+        if (requestCode == 200) {
+            if (data!=null) {
+                profile = data.getStringExtra("profile");
+                Glide.with(this).load("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/"+profile).into(userprofile);
+                System.out.println("#####");
+
+            }
+        }
     }
     public void getPic_List(String data){
         try {

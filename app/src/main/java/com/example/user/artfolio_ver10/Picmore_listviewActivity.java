@@ -86,31 +86,7 @@ public class Picmore_listviewActivity extends AppCompatActivity  {
 //            picmoreListAdapter = new PicmoreList_Adapter(Picmore_listviewActivity.this,
 //                    data, mGlideRequestManager);
             //listView.setAdapter(picmoreListAdapter);
-            for(int i=0; i<name_list.length; i++) {
-                final String file = name_list[i];
-                 BaseTarget target = new BaseTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
-                        // do something with the bitmap
-                        // for demonstration purposes, let's set it to an imageview
-                       saveImage(bitmap, file);
-                    }
 
-                    @Override
-                    public void getSize(SizeReadyCallback cb) {
-                        cb.onSizeReady(SIZE_ORIGINAL, SIZE_ORIGINAL);
-                    }
-
-                    @Override
-                    public void removeCallback(SizeReadyCallback cb) {}
-                };
-
-                Glide.with(this)
-                        .asBitmap()
-                        .load(image_list[i])
-                        .into(target);
-
-            }
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 

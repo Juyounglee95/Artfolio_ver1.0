@@ -13,12 +13,14 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,26 +54,39 @@ public class getprofile extends AppCompatActivity {
     private static final int MY_PERMISSION_CAMERA = 3;
     private static final int GALLERY_ADD_PIC = 4;
     private String absolutePath;
-    String image_name;
-   // String username;
+    String image_name, userId;
+    String sendUri;
     ImageView imageView;
-    TextView imageName;
-    EditText edit_memo;
-    String  pic_memo;
     private Uri imageUri;
     private Uri photoURI, albumURI;
     private Uri signupURI;
     TransferUtility transferUtility;
+    private Usersetting_frag Usersetting_frag;
+
     int index;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_getprofile);
-        imageView= (ImageView)findViewById(R.id.picked_image);
-        imageName = (TextView)findViewById(R.id.Image_name);
+        setContentView(R.layout.usersetting_frag);
+        imageView= (ImageView)findViewById(R.id.profile);
+
         Intent intent = getIntent();
         index = intent.getExtras().getInt("index");
-       // username = intent.getExtras().getString("user_id");
+        userId = intent.getExtras().getString("user_id");
+
+        TextView textView = (TextView) findViewById(R.id.user_id);
+        textView.setText(userId);
+
+        Button btnSave = (Button) findViewById(R.id.save);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendPic_server();
+                Toast.makeText(getprofile.this , "설정이 완료되었습니다",Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
         setMode(index);
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
                 getApplicationContext(),
@@ -128,7 +143,7 @@ public class getprofile extends AppCompatActivity {
     public File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_profile_" + timeStamp + ".jpg";
+        String imageFileName = "JPEG_profile_"+userId+"_" + timeStamp + ".jpg";
         image_name = imageFileName;
         File imageFile = null;
         File storageDir = new File(Environment.getExternalStorageDirectory() + "/Pictures", "Artfolio");
@@ -189,6 +204,7 @@ public class getprofile extends AppCompatActivity {
         startActivityForResult(cropIntent, CROP_FROM_IMAGE);
     }
     public void onActivityResult(int requestCode, int resultCode, Intent data){
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
 
         switch (requestCode) {
@@ -200,6 +216,7 @@ public class getprofile extends AppCompatActivity {
                             albumFile = createImageFile();
                             photoURI = data.getData();
                             albumURI = Uri.fromFile(albumFile);
+
                             Log.i("pick image from gallery", absolutePath);
 
                             storeCropImage();
@@ -224,9 +241,8 @@ public class getprofile extends AppCompatActivity {
                         //imageName.setText(image_name);
                         signupURI = imageUri;
                         imageView.setImageURI(signupURI);
+
                         System.out.println("set Image ok");
-                        imageName.setText(image_name);
-                        System.out.println("set text ok");
                         Log.i("pick image from gallery", absolutePath);
 
                         // storeCropImage();
@@ -244,9 +260,15 @@ public class getprofile extends AppCompatActivity {
                     //   galleryAddPic();
                     signupURI = albumURI;
                     imageView.setImageURI(signupURI);
+                    sendUri = signupURI.toString();
+
+                    /*Bundle profile_bundle = new Bundle();
+                    profile_bundle.putString("id", userId);
+                    profile_bundle.putString("Uri", sendUri);
+                    Usersetting_frag.setArguments(profile_bundle);
+                    transaction.replace(R.id.container, Usersetting_frag);*/
+
                     System.out.println("set Image ok");
-                    imageName.setText(image_name);
-                    System.out.println("set text ok");
                 }
                 break;
 //            case GALLERY_ADD_PIC:
@@ -260,17 +282,15 @@ public class getprofile extends AppCompatActivity {
         }
     }
 
-    public void act_getVideo(View v){
-
-    }
-    public void sendPic_server(View v){
+    public void sendPic_server(){
 //        TransferObserver observer = transferUtility.upload(
 //                "artfolio-imageupload",     /* 업로드 할 버킷 이름 */
 //                OBJECT_KEY,    /* 버킷에 저장할 파일의 이름 */
 //                MY_FILE        /* 버킷에 저장할 파일  */
 //        );
-       send_server(absolutePath);
-
+       // send_server(absolutePath);
+        profile_update profileUpdate = new profile_update();
+        profileUpdate.execute();
 
     }
     private void send_server(String filePath) {
@@ -285,10 +305,10 @@ public class getprofile extends AppCompatActivity {
         Toast.makeText(this, "Picture uploaded on Server SUCCESS!",
                 Toast.LENGTH_LONG).show();
         Intent intent = new Intent();
-        intent.putExtra("Uri", signupURI);
-        intent.putExtra("imagename", image_name);
-        setResult(index, intent);
+        intent.putExtra("profile", image_name);
+        setResult(100, intent);
         finish();
+       // finishActivity(100);
         /*
          * Note that usually we set the transfer listener after initializing the
          * transfer. However it isn't required in this sample app. The flow is
@@ -298,16 +318,6 @@ public class getprofile extends AppCompatActivity {
          */
         // observer.setTransferListener(new UploadListener());
     }
-
-
-
-
-
-
-
-
-
-
 
     public void checkPermission(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -356,6 +366,74 @@ public class getprofile extends AppCompatActivity {
                 break;
         }
     }
+    class profile_update extends AsyncTask<String, Integer, String> {
 
 
+        protected String doInBackground(String... unuesed){
+
+            String data = "";
+            String value =  "ID="+userId+"&profile_path="+image_name+"";
+            try {
+                URL url = new URL("http://54.226.200.206/update_profile.php");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                con.setRequestMethod("POST");
+                con.setDoInput(true);
+                con.connect();
+
+                OutputStream outs = con.getOutputStream();
+                outs.write(value.getBytes("UTF-8"));
+                outs.flush();
+                outs.close();
+                InputStream is = null;
+                BufferedReader in = null;
+
+
+                is = con.getInputStream();
+                in = new BufferedReader(new InputStreamReader(is), 8 * 1024);
+                String line = null;
+                StringBuffer buff = new StringBuffer();
+                while ( ( line = in.readLine() ) != null )
+                {
+                    buff.append(line + "\n");
+                }
+                data = buff.toString().trim();
+
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return data;
+        }
+
+        protected void onPostExecute(String data) {
+
+                 /* 서버에서 응답 */
+            Log.e("RECV DATA",data);
+
+            if(data.equals("ERROR"))
+            {
+                Toast.makeText(getApplicationContext(),"Upload Fail", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),"Upload Success", Toast.LENGTH_SHORT).show();
+//                send_server(absolutePath);
+                //dashboard fragment picnum update 시키기
+                //   finish();
+            }
+            else
+            {
+                //   Toast.makeText(getApplicationContext(),"Upload Fail", Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(getApplicationContext(),"입력사항을 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Upload Success", Toast.LENGTH_SHORT).show();
+                send_server(absolutePath);
+            }
+        }
+
+
+
+
+    }
 }

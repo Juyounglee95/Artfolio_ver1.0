@@ -77,6 +77,12 @@ public class Home_frag extends android.support.v4.app.Fragment {
 
         for(int i=0; i<userlist.length; i++){
             if(fa_totalnum[i]>0) {
+              //  Glide.with(this).load("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/"+profile).into(profile_view);
+                if(profilelist[i].equals("null")){
+
+                }else {
+                    profilelist[i] = profilelist[i];
+                }
                 data.add(new userlist_item(profilelist[i], userlist[i], fa_totalnum[i]));
             }
          //   System.out.println(profilelist[i] + "///"+ userlist[i]);

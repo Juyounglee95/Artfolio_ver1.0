@@ -65,10 +65,14 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
     private static final int PICK_FROM_GALLERY = 1;
     private static final int CROP_FROM_IMAGE = 2;
     private static final int MY_PERMISSION_CAMERA = 3;
+
+    private static final int VIDEO_PICK_FROM_GALLERY = 4;
+    private static final int VIDEO_PICK_FROM_CAMERA = 5;
     String user_id;
     String user_email;
     String imgUrl;
     String mode;
+    String profile;
     int picnum;
     ImageView picture1, picture2, picture3, picture4;
     Bitmap bitmap1, bitmap2, bitmap3, bitmap4;
@@ -136,7 +140,7 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mode = getArguments().getString("initial");
-
+        profile=getArguments().getString("profile");
         user_id = getArguments().getString("id");
         user_email = getArguments().getString("email");
         picnum= getArguments().getInt("picnum");
@@ -148,8 +152,15 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
         Log.e("onCreateView", "View Create");
         picmore_list= ((MainActivity_user)getActivity()).update_list();
         View view = inflater.inflate(R.layout.dashboard_frag, null);
+        ImageView profile_view = (ImageView)view.findViewById(R.id.profile_picture);
+        if(profile.equals("null")){
+
+        }else {
+            Glide.with(getContext()).load( profile).into(profile_view);
+        }
         ImageButton pic_add = (ImageButton) view.findViewById(R.id.pic_add);
         ImageButton list_pic = (ImageButton)view.findViewById(R.id.list1);
+        ImageButton vid_add = (ImageButton) view.findViewById(R.id.add2);
         //Button refresh = (Button)view.findViewById(R.id.btn_refresh);
         TextView userid = (TextView) view.findViewById(R.id.ID);
         TextView useremail = (TextView) view.findViewById(R.id.email);
@@ -268,6 +279,36 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
                                     }
 
         );
+        vid_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent intent = new Intent(getActivity(), getImage.class);
+//                startActivity(intent);
+                //((getImage)getActivity()).checkPermission();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("업로드할 비디오 선택")
+                        .setPositiveButton("Camera", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                video_camera();
+                            }
+                        })
+                        .setNeutralButton("Gallery", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                video_gallery();
+                            }
+                        })
+                        .setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .show();
+            }
+        });
+
 
         // Inflate the layout for this fragment
         // return inflater.inflate(R.layout.dashboard_frag, container, false);
@@ -289,6 +330,21 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
         Toast.makeText(getActivity(), "Pick Image from your camera", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getActivity(), getImage.class);
         intent.putExtra("index", PICK_FROM_CAMERA);
+        intent.putExtra("user_id", user_id);
+        startActivity(intent);
+    }
+    public void video_gallery(){
+        Toast.makeText(getActivity(), "Pick video from your gallery", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), getvideo.class);
+        intent.putExtra("index", VIDEO_PICK_FROM_GALLERY);
+        intent.putExtra("user_id", user_id);
+        startActivity(intent);
+    }
+
+    public void video_camera(){
+        Toast.makeText(getActivity(), "Pick video from your gallery", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), getvideo.class);
+        intent.putExtra("index", VIDEO_PICK_FROM_CAMERA);
         intent.putExtra("user_id", user_id);
         startActivity(intent);
     }
