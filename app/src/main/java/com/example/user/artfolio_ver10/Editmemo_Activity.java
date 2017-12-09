@@ -27,6 +27,7 @@ public class Editmemo_Activity extends AppCompatActivity {
     ImageView image ;
     EditText memo;
     TextView imagename;
+    String mode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +36,9 @@ public class Editmemo_Activity extends AppCompatActivity {
         path = intent.getExtras().getString("path");
         name = intent.getExtras().getString("name");
         memo_text = intent.getExtras().getString("memo");
+        mode=intent.getExtras().getString("mode");
+
+
         //    setMemo();
         image= (ImageView)findViewById(R.id.detail_image);
         memo =(EditText) findViewById(R.id.editor_memo);
@@ -62,7 +66,12 @@ public class Editmemo_Activity extends AppCompatActivity {
             String value = "path="+name+"&memo="+memo_text+"";
             Log.e("POST",value);
             try {
-                URL url = new URL("http://54.226.200.206/update_memo.php");
+                URL url;
+                if(mode.equals("video")){
+                     url = new URL("http://54.226.200.206/update_vidmemo.php");
+                }else {
+                    url = new URL("http://54.226.200.206/update_memo.php");
+                }
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 con.setRequestMethod("POST");

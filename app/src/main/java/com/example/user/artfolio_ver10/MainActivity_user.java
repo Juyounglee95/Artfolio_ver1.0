@@ -54,6 +54,8 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
     String userlist[];
     String profilelist[];
     String mode;
+    int vidList_size;
+    String vidlist[];
     int fa_totalnum [];
     ArrayList<String> piclist = new ArrayList<String>();
     @Override
@@ -203,23 +205,44 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
             Bundle dash_bundel = new Bundle();
 
             if(list!=null) {
-                dash_bundel.putString("initial", "notFirst");
-                dash_bundel.putString("id", id);
-                dash_bundel.putString("email", email);
-                dash_bundel.putInt("picnum", picList_size);
-                dash_bundel.putString("profile", profile);
-                dash_bundel.putStringArray("piclist", list);
-
+                if(vidlist!=null) {
+                    dash_bundel.putString("initial", "notFirst");
+                    dash_bundel.putString("id", id);
+                    dash_bundel.putString("email", email);
+                    dash_bundel.putInt("picnum", picList_size);
+                    dash_bundel.putInt("vidnum",vidList_size);
+                    dash_bundel.putString("profile", profile);
+                    dash_bundel.putStringArray("piclist", list);
+                    dash_bundel.putStringArray("vidlist", vidlist);
+                }else{
+                    dash_bundel.putString("initial", "notFirst_vidnull");
+                    dash_bundel.putString("id", id);
+                    dash_bundel.putString("email", email);
+                    dash_bundel.putInt("picnum", picList_size);
+                    dash_bundel.putString("profile", profile);
+                    dash_bundel.putStringArray("piclist", list);
+                    dash_bundel.putInt("vidnum",vidList_size);
+                }
                // Dashboard_frag.setArguments(dash_bundel);
                 //transaction.replace(R.id.container, Dashboard_frag);
             }else{
-                dash_bundel.putString("initial", "First");
-                dash_bundel.putString("id", id);
-                dash_bundel.putString("email", email);
-                dash_bundel.putString("profile", profile);
-                dash_bundel.putInt("picnum", picList_size);
+                if(vidlist!=null) {
+                    dash_bundel.putString("initial", "First");
+                    dash_bundel.putString("id", id);
+                    dash_bundel.putString("email", email);
+                    dash_bundel.putString("profile", profile);
+                    dash_bundel.putInt("picnum", picList_size);
+                    dash_bundel.putStringArray("vidlist", vidlist);
+                    dash_bundel.putInt("vidnum",vidList_size);
+                }else{
+                    dash_bundel.putString("initial", "First_vidnull");
+                    dash_bundel.putString("id", id);
+                    dash_bundel.putString("email", email);
+                    dash_bundel.putString("profile", profile);
+                    dash_bundel.putInt("picnum", picList_size);
+                    dash_bundel.putInt("vidnum",vidList_size);
 
-                //dash_bundel.putStringArray("piclist", list);
+                }
 
             }
 
@@ -321,10 +344,16 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
              list = string.split("<br>");
 
             picList_size=list.length;
+            vidList_db vidList_db = new vidList_db();
 
+            String vid = vidList_db.execute(id).get();
+            vidlist = vid.split("%");
+            vidList_size = vidlist.length;
         } catch (NullPointerException e) {
             e.printStackTrace();
             //Log.d(TAG, "showResult : ", e);
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
     }
@@ -332,6 +361,11 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         set_picList();
 
         return list;
+    }
+    public String[] update_vidlist(){
+        set_picList();
+
+        return vidlist;
     }
 
     class picInfo_DB extends AsyncTask<String, Integer, String> {
@@ -343,7 +377,8 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
             String value = "ID="+id+"";
             Log.e("POST",value);
             try {
-                URL url = new URL("http://54.226.200.206/down_picInfo.php");
+                URL url = new URL("http://54.226.200.206/down_picInfo.php"); //picture list 정보랑 video list정보 다운로드
+
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 con.setRequestMethod("POST");

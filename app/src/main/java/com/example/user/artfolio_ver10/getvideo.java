@@ -57,6 +57,7 @@ public class getvideo extends AppCompatActivity {
     private static final int VIDEO_PICK_FROM_GALLERY = 4;
     private static final int VIDEO_PICK_FROM_CAMERA = 5;
     private VideoView vv;
+    String videopath_name;
     String video_memo;
     private String selectedVideoPath, videopath;
     String username;
@@ -122,7 +123,7 @@ public class getvideo extends AppCompatActivity {
                 // getUriForFile의 두 번째 인자는 Manifest provier의 authorites와
                 // 일치해야 함
 
-                Uri providerURI = FileProvider.getUriForFile(this, getPackageName(), photoFile);
+                Uri providerURI = FileProvider.getUriForFile(this, "com.example.user.artfolio_ver10", photoFile);
                 mVideoUri = providerURI;
 
                 // 인텐트에 전달할 때는 FileProvier의 Return값인 content://로만!!, providerURI의 값에 카메라 데이터를 넣어 보냄
@@ -145,10 +146,10 @@ public class getvideo extends AppCompatActivity {
                                 System.out.println("selected video path = null!");
                                 finish();
                             } else {
-                                File albumFile = null;
-                                albumFile = createvideoFile();
-                                videoUri = data.getData();
-                                albumURI = Uri.fromFile(albumFile);
+                             //   File albumFile = null;
+                              //  albumFile = createvideoFile();
+                               // videoUri = data.getData();
+                               // albumURI = Uri.fromFile(albumFile);
 
                                 Log.e("path >>", selectedVideoPath);
                                 videopath = selectedVideoPath;
@@ -161,10 +162,17 @@ public class getvideo extends AppCompatActivity {
 
                 }
             }else if(requestCode == ACTION_TAKE_VIDEO){
-                try{
-                    handleCameraVideo(data);
-                }catch(Exception e){
-                    Log.e("REQUEST_TAKE_VIDEO", e.toString());
+                if(resultCode==Activity.RESULT_OK) {
+                    if (data.getData() != null) {
+                        try {
+                            // selectedVideoPath = getPath(data.getData());
+                            // videopath = selectedVideoPath;
+                            handleCameraVideo();
+
+                        } catch (Exception e) {
+                            Log.e("REQUEST_TAKE_VIDEO", e.toString());
+                        }
+                    }
                 }
             }
         vv.start();
@@ -185,6 +193,9 @@ public class getvideo extends AppCompatActivity {
 
     public void gallery_video(){
        // galleryAddVid();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        video_name= "MPEG_" + username+"_" + timeStamp + ".mp4";
+
         videoName.setText(video_name);
         vv.setVisibility(View.VISIBLE);
 
@@ -195,19 +206,24 @@ public class getvideo extends AppCompatActivity {
         vv.setVideoURI(uri);
     }
 
-    private void handleCameraVideo(Intent intent) {
+    private void handleCameraVideo() {
     //    galleryAddVid();
-        videoName.setText(video_name);
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+
+
         vv.setVisibility(View.VISIBLE);
 
         MediaController mc = new MediaController(this);
         vv.setMediaController(mc);
 
-        mVideoUri = intent.getData();
-        videopath = getPath(intent.getData());
-        vv.setVideoURI(mVideoUri);
+       // mVideoUri = intent.getData();
 
-        Log.e("path ->", getPath(intent.getData()));
+      //  Uri uri = Uri.parse(videopath);
+        vv.setVideoURI(mVideoUri);
+        videopath = absolutePath;
+        videoName.setText(video_name);
+        System.out.println("&&&&&&&&&&&&&&"+videopath);
+        Log.e("path ->", getPath(mVideoUri));
     }
 
     public void checkPermission(){
@@ -306,7 +322,7 @@ public class getvideo extends AppCompatActivity {
             return;
         }
         File file = new File(filePath);
-        TransferObserver observer = transferUtility.upload("artfolio-imageupload", file.getName()+"_"+username,
+        TransferObserver observer = transferUtility.upload("artfolio-imageupload", video_name,
                 file);
         Toast.makeText(this, "Video uploaded on Server SUCCESS!",
                 Toast.LENGTH_LONG).show();
@@ -326,6 +342,7 @@ public class getvideo extends AppCompatActivity {
         protected String doInBackground(String... unuesed){
 
             String data = "";
+           // videopath_name=videopath+"_"+username;
             String value =  "ID="+username+"&path="+video_name+"&memo="+video_memo+"";
             try {
                 URL url = new URL("http://54.226.200.206/upload_vidinfo.php");

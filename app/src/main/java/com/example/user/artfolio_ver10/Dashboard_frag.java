@@ -35,6 +35,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;
+
+import org.w3c.dom.Text;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,16 +77,20 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
     String mode;
     String profile;
     int picnum;
+    int vidnum;
     ImageView picture1, picture2, picture3, picture4;
     Bitmap bitmap1, bitmap2, bitmap3, bitmap4;
     Download_thumnail thumnailtask;
     String pic_names[];
+    String vid_names[];
     String thum_piclist[];
+    String thum_vidlist[];
     String picmore_list[];
+    String vidmore_list[];
     ArrayList<dash_thum_pic> data;
-    private ArrayList<HashMap<String, Object>> transferRecordMaps;
+    ArrayList<dash_thum_vid> vid_data;
     AmazonS3 s3;
-    private RecyclerView lecyclerView;
+    private RecyclerView lecyclerView, vidRecyclerView;
     public RequestManager mGlideRequestManager;
 
 
@@ -144,13 +151,21 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
         user_id = getArguments().getString("id");
         user_email = getArguments().getString("email");
         picnum= getArguments().getInt("picnum");
-        if(mode.equals("notFirst")) {
+        vidnum = getArguments().getInt("vidnum");
+        if(mode.equals("notFirst_vidnull")) {
             pic_names = getArguments().getStringArray("piclist");
 
+        }else if(mode.equals("notFirst")){
+            pic_names = getArguments().getStringArray("piclist");
+            vid_names = getArguments().getStringArray("vidlist");
+        }else if(mode.equals("First")){
+            vid_names = getArguments().getStringArray("vidlist");
         }
      //   pic_names= ((MainActivity_user)getActivity()).update_list();
         Log.e("onCreateView", "View Create");
         picmore_list= ((MainActivity_user)getActivity()).update_list();
+        vidmore_list= ((MainActivity_user)getActivity()).update_vidlist();
+
         View view = inflater.inflate(R.layout.dashboard_frag, null);
         ImageView profile_view = (ImageView)view.findViewById(R.id.profile_picture);
         if(profile.equals("null")){
@@ -159,8 +174,9 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
             Glide.with(getContext()).load( profile).into(profile_view);
         }
         ImageButton pic_add = (ImageButton) view.findViewById(R.id.pic_add);
-        ImageButton list_pic = (ImageButton)view.findViewById(R.id.list1);
-        ImageButton vid_add = (ImageButton) view.findViewById(R.id.add2);
+        ImageButton list_pic = (ImageButton)view.findViewById(R.id.pic_list);
+        ImageButton vid_add = (ImageButton) view.findViewById(R.id.vid_add);
+        ImageButton list_vid = (ImageButton)view.findViewById(R.id.vid_list);
         //Button refresh = (Button)view.findViewById(R.id.btn_refresh);
         TextView userid = (TextView) view.findViewById(R.id.ID);
         TextView useremail = (TextView) view.findViewById(R.id.email);
@@ -171,7 +187,7 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
 //        picture4 = (ImageView) view.findViewById(R.id.picture4);
         //HorizontalListView thum_picList = (HorizontalScrollView)view.findViewById(R.id.thum_piclist);
         lecyclerView = (RecyclerView)view.findViewById(R.id.dash_thum_piclist);
-        ArrayList<dash_thum_pic> data = new ArrayList<>();
+         data = new ArrayList<>(); //picture thumbnail 설정
         if(pic_names!=null) {
             thum_piclist = new String[pic_names.length];
             for (int i = 0; i < pic_names.length; i++) {
@@ -185,21 +201,16 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
                 reverse_thumlist[thum_piclist.length - i] = thum_piclist[i - 1].toString();
 
             }
-
-
             if (thum_piclist.length > 4) {
                 for (int i = 0; i < 4; i++) {
-                    // data.remove(i);
                     data.add(new dash_thum_pic(reverse_thumlist[i]));
-                    // System.out.println("thum data: "+data.get(i).getImage_url());
+
                 }
 
-                // System.out.println("data: "+data.get(i).getImage_url());
             } else {
                 for (int i = 0; i < thum_piclist.length; i++) {
-
                     data.add(new dash_thum_pic(reverse_thumlist[i]));
-//           //     System.out.println("thum data: "+data.get(i).getImage_url());
+
                 }
             }
         }
@@ -219,7 +230,49 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
             lecyclerView.setAdapter(thum_adapter);
         }
         //lecyclerView.setItemAnimator(new DefaultItemAnimator());
+        vidRecyclerView = (RecyclerView)view.findViewById(R.id.dash_thum_vidlist);
+        vid_data = new ArrayList<>(); //picture thumbnail 설정
+        if(vid_names!=null) {
+            thum_vidlist = new String[vid_names.length];
+            for (int i = 0; i <vid_names.length; i++) {
 
+                thum_vidlist[i] = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + vid_names[i];
+
+            }
+
+            String[] reverse_vidthumlist = new String[thum_vidlist.length];
+            for (int i = thum_vidlist.length; i > 0; i--) {
+                reverse_vidthumlist[thum_vidlist.length - i] = thum_vidlist[i - 1].toString();
+
+            }
+            if (thum_vidlist.length > 4) {
+                for (int i = 0; i < 4; i++) {
+                    vid_data.add(new dash_thum_vid(reverse_vidthumlist[i]));
+
+                }
+
+            } else {
+                for (int i = 0; i < thum_vidlist.length; i++) {
+                    vid_data.add(new dash_thum_vid(reverse_vidthumlist[i]));
+
+                }
+            }
+        }
+        if(vid_data!=null) {
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            //  thum_adapter.setItems(data);
+            mGlideRequestManager = Glide.with(Dashboard_frag.this);
+            dash_thum_vidadapter thum_vidadapter = new dash_thum_vidadapter(getContext(), vid_data, R.layout.dash_thum_viditem,mGlideRequestManager);
+            vidRecyclerView.setLayoutManager(layoutManager);
+
+
+            //  Collections.reverse(data);
+            thum_vidadapter.setItems(vid_data);
+            //   thum_adapter.notifyDataSetChanged();
+            vidRecyclerView.setAdapter(thum_vidadapter);
+        }
 
 
 
@@ -229,6 +282,8 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
         userid.setText(user_id);
         useremail.setText(user_email);
         picnum_view.setText(Integer.toString(picnum));
+        TextView vidnumview = (TextView)view.findViewById(R.id.vid_num);
+        vidnumview.setText(Integer.toString(vidnum));
 
       //      Glide.with(getActivity()).load("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + pic_names[0]).into(picture1);
        // Glide.with(getActivity()).load("https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + pic_names[1]).into(picture2);
@@ -308,7 +363,20 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
                         .show();
             }
         });
+        list_vid.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
 
+                                            vidmore_list= get_updatevidList();
+                                            if(vidmore_list!=null) {
+                                                Intent intent = new Intent(getActivity(), vidmore_listviewActivity.class);
+                                                intent.putExtra("vidmorelist", vidmore_list);
+                                                startActivity(intent);
+                                            }
+                                        }
+                                    }
+
+        );
 
         // Inflate the layout for this fragment
         // return inflater.inflate(R.layout.dashboard_frag, container, false);
@@ -350,6 +418,9 @@ public class Dashboard_frag extends android.support.v4.app.Fragment {
     }
     public String[] get_updateList(){
         return this.picmore_list;
+    }
+    public String[] get_updatevidList(){
+        return this.vidmore_list;
     }
 
     class Download_thumnail extends AsyncTask<String, Integer, Bitmap> {

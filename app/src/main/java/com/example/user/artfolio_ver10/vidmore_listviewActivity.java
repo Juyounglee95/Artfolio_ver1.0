@@ -41,8 +41,8 @@ import java.util.ArrayList;
 
 import static com.androidquery.util.AQUtility.getContext;
 
-public class Picmore_listviewActivity extends AppCompatActivity  {
-    String image_list[];
+public class vidmore_listviewActivity extends AppCompatActivity  {
+    String vid_list[];
     String name_list[];
     //String path, memo;
     RequestManager  mGlideRequestManager;
@@ -54,11 +54,11 @@ public class Picmore_listviewActivity extends AppCompatActivity  {
         setContentView(R.layout.dash_list_pic);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.picmore_listview);
-        ArrayList<piclist_item> data = new ArrayList<>();
-        PicmoreList_Adapter picmoreListAdapter;
+        ArrayList<vidlist_item> data = new ArrayList<>();
+        vidmoreList_Adapter vidmoreListAdapter;
 
         Intent intent = getIntent();
-        name_list=  intent.getExtras().getStringArray("picmorelist");
+        name_list=  intent.getExtras().getStringArray("vidmorelist");
 //        for (int i = 0; i < name_list.length; i++) {
 //
 //           // image_list[i] = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + piclist[i];
@@ -66,20 +66,20 @@ public class Picmore_listviewActivity extends AppCompatActivity  {
 //             System.out.println(name_list[i]);
 //
 //        }
-        image_list= new String[name_list.length];
+        vid_list= new String[name_list.length];
         //setToUrl(name_list);
         if(name_list!=null) {
             for (int i = 0; i < name_list.length; i++) {
 
-                image_list[i] = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + name_list[i];
+                vid_list[i] = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + name_list[i];
                 //System.out.println(image_list[i]);
                 //System.out.println("name/////"+name_list[i]);
 
             }
         }
-        for(int i=0; i<image_list.length; i++) {
-            data.add(new piclist_item(image_list[i], name_list[i]));
-            System.out.println("data: "+data.get(i).getImage_url());
+        for(int i=0; i<vid_list.length; i++) {
+            data.add(new vidlist_item(vid_list[i], name_list[i]));
+            System.out.println("data: "+data.get(i).getVideo_url());
         }
 
         if(data!=null) {
@@ -94,8 +94,8 @@ public class Picmore_listviewActivity extends AppCompatActivity  {
 
             mGlideRequestManager = Glide.with(this);
             //  Collections.reverse(data);
-            recyclerView.setAdapter(new PicmoreList_Adapter(this, data, R.layout.picmore_item,mGlideRequestManager));
-         //   finish();
+            recyclerView.setAdapter(new vidmoreList_Adapter(this, data, R.layout.picmore_item,mGlideRequestManager));
+            //   finish();
         }
 
 
