@@ -43,6 +43,7 @@ public class myfavorite_list_adapter extends RecyclerView.Adapter<myfavorite_lis
     String loginID;
     String profile_path;
     String []list;
+    String[]vidlist;
     int picList_size;
     public myfavorite_list_adapter(Context context, ArrayList<myfavorite_list_item> myfavorite_list_items, RequestManager requestManager) {
         this.context = context;
@@ -186,43 +187,68 @@ public class myfavorite_list_adapter extends RecyclerView.Adapter<myfavorite_lis
             asyncDialog.dismiss();
             //System.out.print(data);
             // data = data.toString();
-            if (data.equals("null")) {
-                Toast.makeText(context, "The dashboard is empty", Toast.LENGTH_SHORT).show();
-            } else {
-                try {
-                    String string = data;
+            vidList_db vidList_db = new vidList_db();
 
-                    list = string.split("<br>");
+            try {
+                String viddata = vidList_db.execute(id).get();
+                String string = data;
 
-                    picList_size = list.length;
-                    favorite_listInfo favorite_listInfo = new favorite_listInfo();
-                    Boolean added = false;
-                    String fa_num = "0";
-                    String value = loginID + "," + id;
-                    String in_falist = favorite_listInfo.execute(value).get();
+                if (data.equals("null")){
 
-                    if (!in_falist.equals("null")) {
-                        String[] list = in_falist.split("/");
-                        for (int i = 0; i < list.length - 1; i++) {
-                            if (id.equals(list[i])) {
-                                added = true;
-                                fa_num = list[list.length - 1];
-                                break;
-                            }
-                        }
-
+                    if(viddata.equals("null")) {
+                        Toast.makeText(context, "The dashboard is empty", Toast.LENGTH_SHORT).show();
+                        return;
+                    }else{
+                        list = string.split("<br>");
+                        vidlist =viddata.split("%");
                     }
-                    Intent intent = new Intent(context, otherdash_activity.class);
-                    intent.putExtra("piclist", list);
-                    intent.putExtra("picnum", picList_size);
-                    intent.putExtra("id", id);
-                    intent.putExtra("profile", profile_path);
-                    intent.putExtra("fa_num", fa_num);
-                    intent.putExtra("fa_added", added);
-                    intent.putExtra("loginID", loginID);
-                    context.startActivity(intent);
 
-                } catch (NullPointerException e) {
+                }else{
+
+                    if(viddata.equals("null")) {
+                        list = string.split("<br>");
+                        vidlist =viddata.split("%");
+                    }else{
+                        list = string.split("<br>");
+                        vidlist =viddata.split("%");
+                    }
+                }
+
+
+                picList_size = list.length;
+                int vidlist_size = vidlist.length;
+                favorite_listInfo favorite_listInfo = new favorite_listInfo();
+                Boolean added = false;
+                String fa_num = "0";
+                String value = loginID + "," + id;
+                String in_falist = favorite_listInfo.execute(value).get();
+
+                if (!in_falist.equals("null")) {
+                    String[] list = in_falist.split("/");
+                    for (int i = 0; i < list.length - 1; i++) {
+                        if (id.equals(list[i])) {
+                            added = true;
+                            fa_num = list[list.length - 1];
+                            break;
+                        }
+                    }
+
+                }
+                Intent intent = new Intent(context, otherdash_activity.class);
+                if(!vidlist.equals("null")) {
+                    intent.putExtra("vidlist", vidlist);
+                }
+                intent.putExtra("piclist", list);
+                intent.putExtra("picnum", picList_size);
+                intent.putExtra("vidnum", vidlist_size);
+                intent.putExtra("profile", profile_path);
+                intent.putExtra("id", id);
+                intent.putExtra("fa_num", fa_num);
+                intent.putExtra("fa_added", added);
+                intent.putExtra("loginID", loginID);
+                context.startActivity(intent);
+
+            } catch (NullPointerException e) {
                     e.printStackTrace();
                     //Log.d(TAG, "showResult : ", e);
                 } catch (Exception e) {
@@ -233,7 +259,7 @@ public class myfavorite_list_adapter extends RecyclerView.Adapter<myfavorite_lis
             }
 
         }
-    }
+
 
     @Override
     public int getItemCount() {

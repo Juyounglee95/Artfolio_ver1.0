@@ -26,9 +26,9 @@ public class otherdash_adapter extends RecyclerView.Adapter<otherdash_adapter.Vi
     otherdash_adapter.ViewHolder viewHolder;
     RequestManager mRequestManager;
     public View view;
-
-    public otherdash_adapter(ArrayList<otherdash_item> otherdash_items, RequestManager requestManager ) {
-
+    String pic;
+    public otherdash_adapter(String pic, ArrayList<otherdash_item> otherdash_items, RequestManager requestManager ) {
+        this.pic = pic;
         this.otherdash_items = otherdash_items;
 
         mRequestManager= requestManager;
@@ -63,22 +63,41 @@ public class otherdash_adapter extends RecyclerView.Adapter<otherdash_adapter.Vi
 
     }
     public void setMemo(){
-        pic_detail pic_detail = new pic_detail();
-        try{
-            memo=pic_detail.execute(path).get();
+        if(pic.equals("pic")) {
+            pic_detail pic_detail = new pic_detail();
+            try {
+                memo = pic_detail.execute(path).get();
 
-        }catch (Exception e){
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //   String memo = data;
+
+            Intent intent = new Intent(view.getContext(), pic_detailActivity.class);
+            intent.putExtra("path", path);
+            String name = path.substring(61);
+            intent.putExtra("name", name);
+            intent.putExtra("memo", memo);
+            intent.putExtra("mode", "otheruser");
+            view.getContext().startActivity(intent);
+        }else{
+            vid_detail vid_detail = new vid_detail();
+            try {
+                memo = vid_detail.execute(path).get();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //   String memo = data;
+
+            Intent intent = new Intent(view.getContext(), vid_detailActivity.class);
+            intent.putExtra("path", path);
+            String name = path.substring(61);
+            intent.putExtra("name", name);
+            intent.putExtra("memo", memo);
+            intent.putExtra("mode", "otheruser");
+            view.getContext().startActivity(intent);
         }
-        //   String memo = data;
-
-        Intent intent = new Intent(view.getContext(), pic_detailActivity.class);
-        intent.putExtra("path", path);
-        String name = path.substring(61);
-        intent.putExtra("name",name);
-        intent.putExtra("memo", memo);
-        intent.putExtra("mode", "otheruser");
-        view.getContext().startActivity(intent);
 //        //   // Toast.makeText(getApplicationContext(), "download success", Toast.LENGTH_SHORT).show();
         //   return data;pic_detail.execute();
     }

@@ -50,6 +50,7 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
     RequestManager mRequestManager;
     String id;
     String []list;
+    String []vidlist;
     int picList_size;
     String profile_path;
    // String name;
@@ -195,36 +196,60 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
             asyncDialog.dismiss();
             //System.out.print(data);
             // data = data.toString();
-            if(data.equals("null")){
-                Toast.makeText(context, "The dashboard is empty", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                try {
-                    String string = data;
+            vidList_db vidList_db = new vidList_db();
 
-                    list = string.split("<br>");
+            try {
+                String viddata = vidList_db.execute(id).get();
+                String string = data;
 
-                    picList_size=list.length;
+                if (data.equals("null")){
+
+                    if(viddata.equals("null")) {
+                        Toast.makeText(context, "The dashboard is empty", Toast.LENGTH_SHORT).show();
+                        return;
+                    }else{
+                        list = string.split("<br>");
+                        vidlist =viddata.split("%");
+                    }
+
+                }else{
+
+                    if(viddata.equals("null")) {
+                        list = string.split("<br>");
+                        vidlist =viddata.split("%");
+                    }else{
+                        list = string.split("<br>");
+                        vidlist =viddata.split("%");
+                    }
+                }
+
+
+                    picList_size = list.length;
+                   int vidlist_size = vidlist.length;
                     favorite_listInfo favorite_listInfo = new favorite_listInfo();
                     Boolean added = false;
-                    String fa_num ="0";
-                    String value = loginID+","+id;
+                    String fa_num = "0";
+                    String value = loginID + "," + id;
                     String in_falist = favorite_listInfo.execute(value).get();
 
-                    if(!in_falist.equals("null")){
-                        String [] list = in_falist.split("/");
-                        for(int i =0; i<list.length-1; i++){
-                            if(id.equals(list[i])){
+                    if (!in_falist.equals("null")) {
+                        String[] list = in_falist.split("/");
+                        for (int i = 0; i < list.length - 1; i++) {
+                            if (id.equals(list[i])) {
                                 added = true;
-                                fa_num = list[list.length-1];
+                                fa_num = list[list.length - 1];
                                 break;
                             }
                         }
 
                     }
-                    Intent intent = new Intent(context,otherdash_activity.class);
+                    Intent intent = new Intent(context, otherdash_activity.class);
+                    if(!vidlist.equals("null")) {
+                        intent.putExtra("vidlist", vidlist);
+                    }
                     intent.putExtra("piclist", list);
                     intent.putExtra("picnum", picList_size);
+                    intent.putExtra("vidnum", vidlist_size);
                     intent.putExtra("profile", profile_path);
                     intent.putExtra("id", id);
                     intent.putExtra("fa_num", fa_num);
@@ -232,7 +257,8 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
                     intent.putExtra("loginID", loginID);
                     context.startActivity(intent);
 
-                } catch (NullPointerException e) {
+
+            }catch (NullPointerException e) {
                     e.printStackTrace();
                     //Log.d(TAG, "showResult : ", e);
                 }catch (Exception e ){
@@ -247,7 +273,7 @@ public class homeAdapter_popular extends RecyclerView.Adapter<homeAdapter_popula
 
 
 
-    }
+
 
 
 

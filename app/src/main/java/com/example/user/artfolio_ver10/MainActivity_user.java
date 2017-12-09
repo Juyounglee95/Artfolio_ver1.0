@@ -104,23 +104,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-     //  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Upload your work!", Snackbar.LENGTH_LONG)
-//                        .setAction(
-//                "UPLOAD", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//
-//                        Toast.makeText(MainActivity_user.this, "Add work activity", Toast.LENGTH_SHORT).show();
-//
-//                    }
-//                }).show();
-//            }
-//        });
-        // mTitle=mDrawerTitle=getTitle();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -286,21 +270,40 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
             Bundle export_bundle = new Bundle();
 
             if(list!=null) {
+                if(vidlist!=null) {
+                    export_bundle.putString("id", id);
+                    export_bundle.putString("email", email);
+                    //export_bundle.putInt("picnum", picList_size);
 
-                export_bundle.putString("id", id);
-                export_bundle.putString("email", email);
-                //export_bundle.putInt("picnum", picList_size);
+                    export_bundle.putStringArray("piclist", list);
+                    export_bundle.putStringArray("vidlist", vidlist);
+                    export_frag.setArguments(export_bundle);
+                    transaction.replace(R.id.container, export_frag);
+                }else{
+                    export_bundle.putString("id", id);
+                    export_bundle.putString("email", email);
+                    //export_bundle.putInt("picnum", picList_size);
 
-                export_bundle.putStringArray("piclist", list);
+                    export_bundle.putStringArray("piclist", list);
 
-                export_frag.setArguments(export_bundle);
-                transaction.replace(R.id.container, export_frag);
+                    export_frag.setArguments(export_bundle);
+                    transaction.replace(R.id.container, export_frag);
+                }
                 // Dashboard_frag.setArguments(dash_bundel);
                 //transaction.replace(R.id.container, Dashboard_frag);
             }else{
+                if(vidlist!=null){
+                    export_bundle.putString("id", id);
+                    export_bundle.putString("email", email);
+                    //export_bundle.putInt("picnum", picList_size);
 
-                Toast.makeText(MainActivity_user.this, "Your work does not exist! Please upload your work", Toast.LENGTH_LONG).show();
+                    export_bundle.putStringArray("vidlist", vidlist);
 
+                    export_frag.setArguments(export_bundle);
+                    transaction.replace(R.id.container, export_frag);
+                }else {
+                    Toast.makeText(MainActivity_user.this, "Your work does not exist! Please upload your work", Toast.LENGTH_LONG).show();
+                }
             }
 
 
@@ -313,10 +316,6 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
 //            dash_bundle.putString("id", id);
 //            usersetting_frag.setArguments(dash_bundle);
 //            transaction.replace(R.id.container, usersetting_frag);
-
-        }else if (itemid == R.id.nav_share) {
-
-        }else if (itemid == R.id.nav_message) {
 
         }
         transaction.addToBackStack(null);
@@ -344,11 +343,11 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
              list = string.split("<br>");
 
             picList_size=list.length;
-            vidList_db vidList_db = new vidList_db();
-
-            String vid = vidList_db.execute(id).get();
-            vidlist = vid.split("%");
-            vidList_size = vidlist.length;
+//            vidList_db vidList_db = new vidList_db();
+//
+//            String vid = vidList_db.execute(id).get();
+//            vidlist = vid.split("%");
+//            vidList_size = vidlist.length;
         } catch (NullPointerException e) {
             e.printStackTrace();
             //Log.d(TAG, "showResult : ", e);
@@ -427,9 +426,29 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
             // data = data.toString();
             if(data.equals("null")){
                 //Toast.makeText(getApplicationContext(), "There is no files on server", Toast.LENGTH_SHORT).show();
+                vidList_db vidList_db = new vidList_db();
+                try {
+                    String vid = vidList_db.execute(id).get();
+                    if(!vid.equals("null")) {
+                        vidlist = vid.split("%");
+                        vidList_size = vidlist.length;
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             else{
                 getPic_List(data);
+                vidList_db vidList_db = new vidList_db();
+                try {
+                    String vid = vidList_db.execute(id).get();
+                    if(!vid.equals("null")) {
+                        vidlist = vid.split("%");
+                        vidList_size = vidlist.length;
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                // Toast.makeText(getApplicationContext(), "download success", Toast.LENGTH_SHORT).show();
 
             }

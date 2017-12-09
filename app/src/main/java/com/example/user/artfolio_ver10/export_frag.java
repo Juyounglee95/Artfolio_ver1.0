@@ -34,6 +34,8 @@ public class export_frag extends Fragment {
     String initial;
     String [] piclist;
     String [] imagelist;
+    String [] vidlist;
+    String [] vidpathlist;
     String id;
     String email;
     private RecyclerView recyclerView;
@@ -71,28 +73,59 @@ public class export_frag extends Fragment {
         email = getArguments().getString("email");
             piclist = getArguments().getStringArray("piclist");
 
-
+            vidlist = getArguments().getStringArray("vidlist");
         View view = inflater.inflate(R.layout.export_frag, null);
         // Inflate the layout for this fragment
         Button bt_zip = (Button)view.findViewById(R.id.bt_zip);
 
         recyclerView = (RecyclerView)view.findViewById(R.id.export_piclist);
         ArrayList<exportlist_item> data = new ArrayList<>();
-        imagelist = new String[piclist.length];
+        if(piclist!=null) {
+            imagelist = new String[piclist.length];
 
-        for(int i =0 ; i<piclist.length; i++){
-            imagelist[i] = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + piclist[i];
-            data.add(new exportlist_item(imagelist[i], piclist[i],false));
+            for (int i = 0; i < piclist.length; i++) {
+                imagelist[i] = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + piclist[i];
+                data.add(new exportlist_item(imagelist[i], piclist[i], false));
 
+            }
+            if(vidlist!=null){
+                vidpathlist = new String[vidlist.length];
+                for (int i= 0; i < vidlist.length; i++) {
+                    vidpathlist[i] = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + vidlist[i];
+                    data.add(new exportlist_item(vidpathlist[i], vidlist[i], false));
+
+                }
+            }
+//
+//            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+//            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+//            recyclerView.setLayoutManager(layoutManager);
+//            mGlideRequestManager = Glide.with(this);
+//            exportlist_adapter = new exportlist_adapter(getContext(), data, R.layout.export_item, mGlideRequestManager);
+//            recyclerView.setAdapter(exportlist_adapter);
+        }else{
+
+            if(vidlist!=null) {
+                vidpathlist = new String[vidlist.length];
+
+                for (int i = 0; i < vidlist.length; i++) {
+                    vidpathlist[i] = "https://s3.ap-northeast-2.amazonaws.com/artfolio-imageupload/" + vidlist[i];
+                    data.add(new exportlist_item(vidpathlist[i], vidlist[i], false));
+
+                }
         }
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(layoutManager);
-        mGlideRequestManager = Glide.with(this);
-        exportlist_adapter = new exportlist_adapter(getContext(), data, R.layout.export_item,mGlideRequestManager);
-        recyclerView.setAdapter(exportlist_adapter);
 
+
+        }
+        if(data!=null){
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(layoutManager);
+            mGlideRequestManager = Glide.with(this);
+            exportlist_adapter = new exportlist_adapter(getContext(), data, R.layout.export_item, mGlideRequestManager);
+            recyclerView.setAdapter(exportlist_adapter);
+        }
         bt_zip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

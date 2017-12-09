@@ -27,17 +27,5 @@
             android:title="User Setting" />
     </group>
 
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_message"
-                android:icon="@drawable/ic_chat_black_24dp"
-                android:title="Chat" />
-        </menu>
-    </item>
 
 </menu>
