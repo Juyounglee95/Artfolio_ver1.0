@@ -50,6 +50,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
     private favorite_frag favorite_frag;
     private export_frag export_frag;
     private Usersetting_frag usersetting_frag;
+    private Dashboard_agency_frag Dashboard_agency_frag;
     String list[];
     String userlist[];
     String profilelist[];
@@ -82,7 +83,7 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
        // System.out.println(name);
         setContentView(R.layout.activity_main_user);
 
-
+        Dashboard_agency_frag = Dashboard_agency_frag.newInstance();
         Dashboard_frag =  Dashboard_frag.newInstance();
         Home_frag = Home_frag.newInstance();
         favorite_frag = favorite_frag.newInstance();
@@ -187,52 +188,76 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
         if (itemid == R.id.nav_dashboard) {
             // Handle the dashboard action
             Bundle dash_bundel = new Bundle();
+            if(mode.equals("user")) {
+                if (list != null) {
+                    if (vidlist != null) {
+                        dash_bundel.putString("initial", "notFirst");
+                        dash_bundel.putString("id", id);
+                        dash_bundel.putString("email", email);
+                        dash_bundel.putInt("picnum", picList_size);
+                        dash_bundel.putInt("vidnum", vidList_size);
+                        dash_bundel.putString("profile", profile);
+                        dash_bundel.putStringArray("piclist", list);
+                        dash_bundel.putStringArray("vidlist", vidlist);
+                    } else {
+                        dash_bundel.putString("initial", "notFirst_vidnull");
+                        dash_bundel.putString("id", id);
+                        dash_bundel.putString("email", email);
+                        dash_bundel.putInt("picnum", picList_size);
+                        dash_bundel.putString("profile", profile);
+                        dash_bundel.putStringArray("piclist", list);
+                        dash_bundel.putInt("vidnum", vidList_size);
+                    }
+                    // Dashboard_frag.setArguments(dash_bundel);
+                    //transaction.replace(R.id.container, Dashboard_frag);
+                } else {
+                    if (vidlist != null) {
+                        dash_bundel.putString("initial", "First");
+                        dash_bundel.putString("id", id);
+                        dash_bundel.putString("email", email);
+                        dash_bundel.putString("profile", profile);
+                        dash_bundel.putInt("picnum", picList_size);
+                        dash_bundel.putStringArray("vidlist", vidlist);
+                        dash_bundel.putInt("vidnum", vidList_size);
+                    } else {
+                        dash_bundel.putString("initial", "First_vidnull");
+                        dash_bundel.putString("id", id);
+                        dash_bundel.putString("email", email);
+                        dash_bundel.putString("profile", profile);
+                        dash_bundel.putInt("picnum", picList_size);
+                        dash_bundel.putInt("vidnum", vidList_size);
 
-            if(list!=null) {
-                if(vidlist!=null) {
+                    }
+
+                }
+
+                Dashboard_frag.setArguments(dash_bundel);
+                transaction.replace(R.id.container, Dashboard_frag);
+            }
+            else {
+                if(list!=null) {
                     dash_bundel.putString("initial", "notFirst");
                     dash_bundel.putString("id", id);
                     dash_bundel.putString("email", email);
                     dash_bundel.putInt("picnum", picList_size);
-                    dash_bundel.putInt("vidnum",vidList_size);
                     dash_bundel.putString("profile", profile);
                     dash_bundel.putStringArray("piclist", list);
-                    dash_bundel.putStringArray("vidlist", vidlist);
+                    // Dashboard_frag.setArguments(dash_bundel);
+                    //transaction.replace(R.id.container, Dashboard_frag);
                 }else{
-                    dash_bundel.putString("initial", "notFirst_vidnull");
-                    dash_bundel.putString("id", id);
-                    dash_bundel.putString("email", email);
-                    dash_bundel.putInt("picnum", picList_size);
-                    dash_bundel.putString("profile", profile);
-                    dash_bundel.putStringArray("piclist", list);
-                    dash_bundel.putInt("vidnum",vidList_size);
-                }
-               // Dashboard_frag.setArguments(dash_bundel);
-                //transaction.replace(R.id.container, Dashboard_frag);
-            }else{
-                if(vidlist!=null) {
                     dash_bundel.putString("initial", "First");
                     dash_bundel.putString("id", id);
                     dash_bundel.putString("email", email);
                     dash_bundel.putString("profile", profile);
                     dash_bundel.putInt("picnum", picList_size);
-                    dash_bundel.putStringArray("vidlist", vidlist);
-                    dash_bundel.putInt("vidnum",vidList_size);
-                }else{
-                    dash_bundel.putString("initial", "First_vidnull");
-                    dash_bundel.putString("id", id);
-                    dash_bundel.putString("email", email);
-                    dash_bundel.putString("profile", profile);
-                    dash_bundel.putInt("picnum", picList_size);
-                    dash_bundel.putInt("vidnum",vidList_size);
+
+                    //dash_bundel.putStringArray("piclist", list);
 
                 }
 
+                Dashboard_agency_frag.setArguments(dash_bundel);
+                transaction.replace(R.id.container, Dashboard_agency_frag);
             }
-
-            Dashboard_frag.setArguments(dash_bundel);
-            transaction.replace(R.id.container, Dashboard_frag);
-
         } else if (itemid == R.id.nav_favorite) {
             favorite_listInfo favorite_listInfo = new favorite_listInfo();
 
@@ -366,6 +391,21 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
 
         return vidlist;
     }
+    public void getMemo(String data){
+        try {
+            String string = data;
+
+            list = string.split("<br>");
+
+            picList_size=list.length;
+
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            //Log.d(TAG, "showResult : ", e);
+        }
+
+    }
+
 
     class picInfo_DB extends AsyncTask<String, Integer, String> {
 
@@ -424,35 +464,44 @@ public class MainActivity_user extends AppCompatActivity implements NavigationVi
 
             //System.out.print(data);
             // data = data.toString();
-            if(data.equals("null")){
-                //Toast.makeText(getApplicationContext(), "There is no files on server", Toast.LENGTH_SHORT).show();
-                vidList_db vidList_db = new vidList_db();
-                try {
-                    String vid = vidList_db.execute(id).get();
-                    if(!vid.equals("null")) {
-                        vidlist = vid.split("%");
-                        vidList_size = vidlist.length;
+           // if (mode.equals("user")) {
+                if (data.equals("null")) {
+                    //Toast.makeText(getApplicationContext(), "There is no files on server", Toast.LENGTH_SHORT).show();
+                    vidList_db vidList_db = new vidList_db();
+                    try {
+                        String vid = vidList_db.execute(id).get();
+                        if (!vid.equals("null")) {
+                            vidlist = vid.split("%");
+                            vidList_size = vidlist.length;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-            else{
-                getPic_List(data);
-                vidList_db vidList_db = new vidList_db();
-                try {
-                    String vid = vidList_db.execute(id).get();
-                    if(!vid.equals("null")) {
-                        vidlist = vid.split("%");
-                        vidList_size = vidlist.length;
+                } else {
+                    getPic_List(data);
+                    vidList_db vidList_db = new vidList_db();
+                    try {
+                        String vid = vidList_db.execute(id).get();
+                        if (!vid.equals("null")) {
+                            vidlist = vid.split("%");
+                            vidList_size = vidlist.length;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }catch (Exception e){
-                    e.printStackTrace();
+                    // Toast.makeText(getApplicationContext(), "download success", Toast.LENGTH_SHORT).show();
+
                 }
-               // Toast.makeText(getApplicationContext(), "download success", Toast.LENGTH_SHORT).show();
 
-            }
-
+//            }else{
+//                if(data.equals("null")){
+//                    //Toast.makeText(getApplicationContext(), "There is no files on server", Toast.LENGTH_SHORT).show();
+//                }
+//                else{
+//                    getMemo(data);
+//                    // Toast.makeText(getApplicationContext(), "download success", Toast.LENGTH_SHORT).show();
+//                }
+//            }
         }
 
 
