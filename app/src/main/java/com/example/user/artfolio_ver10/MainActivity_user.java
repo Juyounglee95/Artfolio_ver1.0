@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.user.artfolio_ver10.R;
-import com.kakao.usermgmt.response.model.User;
 
 import org.w3c.dom.Text;
 

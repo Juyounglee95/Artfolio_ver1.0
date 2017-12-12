@@ -120,7 +120,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/com_facebook_button_background_color_focused"
+        android:background="@color/cardview_light_background"
         android:onClick="add_favorite"
         app:layout_constraintBottom_toTopOf="@+id/other_totalnum"
         app:layout_constraintEnd_toEndOf="parent"

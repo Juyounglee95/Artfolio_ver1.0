@@ -33,7 +33,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by user on 2017-11-25.
@@ -83,7 +82,7 @@ public class Dashboard_agency_frag extends android.support.v4.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
-                getApplicationContext(),
+                getContext(),
                 "ap-northeast-1:e511d75d-2f61-4459-9ea1-e388bfaa5be0", // Identity pool ID
                 Regions.AP_NORTHEAST_1 // Region
         );
@@ -91,7 +90,7 @@ public class Dashboard_agency_frag extends android.support.v4.app.Fragment {
 
         s3.setRegion(Region.getRegion(Regions.AP_NORTHEAST_2));
         s3.setEndpoint("s3.ap-northeast-2.amazonaws.com");
-        transferUtility = new TransferUtility(s3, getApplicationContext());
+        transferUtility = new TransferUtility(s3, getContext());
 
     }
 
