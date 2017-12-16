@@ -89,11 +89,8 @@ public class Picmore_listviewActivity extends AppCompatActivity  {
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
             recyclerView.setLayoutManager(layoutManager);
-
             mGlideRequestManager = Glide.with(this);
-            //  Collections.reverse(data);
             recyclerView.setAdapter(new PicmoreList_Adapter(this, data, R.layout.picmore_item,mGlideRequestManager));
          //   finish();
         }

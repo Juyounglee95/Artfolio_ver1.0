@@ -192,20 +192,12 @@ public class export_zip extends AppCompatActivity {
         Uri u =  FileProvider.getUriForFile(this,"com.example.user.artfolio_ver10", filein);
         //email send
         Intent intent = new Intent(Intent.ACTION_SEND);
-
         intent.setType("plain/text");
-
-
         String[] address = {emailadd}; //주소를 넣어두면 미리 주소가 들어가 있다.
-
         intent.putExtra(Intent.EXTRA_EMAIL, address);
-
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-
         intent.putExtra(Intent.EXTRA_TEXT, text);
-
         intent.putExtra(Intent.EXTRA_STREAM, u); //파일 첨부
-
         startActivity(intent);
 
        // Toast.makeText(this, "Send email success", Toast.LENGTH_SHORT).show();

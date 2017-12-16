@@ -31,8 +31,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
-
     compile 'com.googlecode.android-query:android-query:0.25.9'
     compile 'de.hdodenhof:circleimageview:1.2.1'
     compile 'com.amazonaws:aws-android-sdk-core:2.2.+'

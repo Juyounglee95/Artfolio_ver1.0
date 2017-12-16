@@ -327,14 +327,7 @@ public class getvideo extends AppCompatActivity {
         Toast.makeText(this, "Video uploaded on Server SUCCESS!",
                 Toast.LENGTH_LONG).show();
         finish();
-        /*
-         * Note that usually we set the transfer listener after initializing the
-         * transfer. However it isn't required in this sample app. The flow is
-         * click upload button -> start an activity for image selection
-         * startActivityForResult -> onActivityResult -> beginUpload -> onResume
-         * -> set listeners to in progress transfers.
-         */
-        // observer.setTransferListener(new UploadListener());
+
     }
     class vidInfo_upload extends AsyncTask<String, Integer, String> {
 
