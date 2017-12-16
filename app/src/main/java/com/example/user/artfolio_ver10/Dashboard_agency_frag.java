@@ -111,6 +111,7 @@ public class Dashboard_agency_frag extends android.support.v4.app.Fragment {
 
             if(introduction.equals("ERROR")){
                 introduction="\n\n\n\n\nCOMPANY INTRODUCTION";
+                intro_image="null";
             }else{
                 String intro [] = introduction.split("%");
                 introduction = intro[0];
